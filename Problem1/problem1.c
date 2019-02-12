@@ -136,7 +136,7 @@ void printArgErrorInfo() {
 	printf("./pn teams pirates ninjas pirateAvgCostumingTime ninjaAvgCostumingTime pirateAvgArrivalTime ninjaAvgArrivalTime\n");
 }
 
-int main(int argc, int **argv[]) {
+int main(int argc, char **argv[]) {
 	if(argc < 2) {
 					printf("Missing number of costuming teams.\n");
 					printArgErrorInfo();
