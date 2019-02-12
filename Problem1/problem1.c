@@ -16,7 +16,24 @@ void leaveWardrobe(fighter f) {
 *								Helper methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
+long getDiffTime(struct timeval *start, struct timeval *end) {
+    unsigned long long diff = 0;
+    unsigned long long sec = 0;
+    unsigned long long ms = 0;
 
+    sec = end->tv_sec - start->tv_sec; //get number of seconds
+    diff += sec * 1000; //convert to milliseconds
+
+    if (start->tv_usec > end->tv_usec) {
+        ms = start->tv_usec - end->tv_usec; //microseconds
+        diff += ms / 1000; //convert to milliseconds
+    } else {
+        ms = end->tv_usec - start->tv_usec;
+        diff += ms / 1000; //conver to milliseconds
+    }
+
+    return diff;
+}
 
 /* * * * * * * * * * * * * * * * * * * * * * *
 *								Queue methods
