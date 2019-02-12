@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <sys/time.h>
+#include <limits.h>
 
 // General linked list
 typedef struct g_list
@@ -77,7 +78,7 @@ void push(GList** head_ref, void *new_data, size_t data_size);
 // Queue methods
 GQueue* createQueue(unsigned capacity);
 int isFull(GQueue* queue);
-int isEmpty(struct GQueue* queue);
+int isEmpty(GQueue* queue);
 void enqueue(GQueue* queue, int item);
 int dequeue(GQueue* queue);
 int front(GQueue* queue);

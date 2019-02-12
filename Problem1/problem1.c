@@ -87,7 +87,7 @@ int isFull(GQueue* queue) {
 
 }
 
-int isEmpty(struct GQueue* queue) {
+int isEmpty(GQueue* queue) {
 
 		// Check if queue size is 0
 		return (queue->size == 0);
