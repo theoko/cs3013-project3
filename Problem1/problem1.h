@@ -11,7 +11,7 @@
 typedef struct g_list
 {
     void  *data; // any data
-    struct Node *next; // pointer to next element
+    struct g_list *next; // pointer to next element
 } GList;
 
 // Queue
@@ -36,6 +36,7 @@ typedef struct ninja_node {
   int numOfVisits; // Number of visits
   GList* visitTime; // List which will keep track of time spent on each visit
   GList* waitTime; // List which will keep track of time spent waiting
+  fighter type;
 } ninja;
 
 // Pirate:
@@ -47,6 +48,7 @@ typedef struct pirate_node {
   int numOfVisits;
   GList* visitTime; // List which will keep track of time spent on each visit
   GList* waitTime; // List which will keep track of time spent waiting
+  fighter type;
 } pirate;
 
 // Team:
@@ -55,14 +57,30 @@ typedef struct pirate_node {
 //  - number of customers served
 //  - amount of gold
 typedef struct team_node {
-  GList* busy;
-  GList* free;
+  GList* busy; // List to keep track of time that a team is busy
+  GList* free; // List to keep track of time that a team is free
   int numOfCustomers;
   int gold;
 } team;
 
+
+// Wardrobe synchronization methods
 void enterWardrobe(fighter f);
 void leaveWardrobe(fighter f);
+
+// Helper methods
 long getDiffTime(struct timeval *start, struct timeval *end);
+
+// Linked list methods
+void push(struct Node** head_ref, void *new_data, size_t data_size);
+
+// Queue methods
+GQueue* createQueue(unsigned capacity);
+int isFull(GQueue* queue);
+int isEmpty(struct Queue* queue);
+void enqueue(GQueue* queue, int item);
+int dequeue(GQueue* queue);
+int front(GQueue* queue);
+int rear(GQueue* queue);
 
 #endif
