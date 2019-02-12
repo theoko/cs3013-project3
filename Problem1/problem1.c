@@ -42,7 +42,7 @@ long getDiffTime(struct timeval *start, struct timeval *end) {
 void push(GList** head_ref, void *new_data, size_t data_size)
 {
     // Allocate memory for node
-    GList* new_node = (struct Node*)malloc(sizeof(GList));
+    GList* new_node = (GList*) malloc(sizeof(GList));
 
     new_node->data  = malloc(data_size);
     new_node->next = (*head_ref);
