@@ -39,10 +39,10 @@ long getDiffTime(struct timeval *start, struct timeval *end) {
 *							Linked list methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
-void push(struct GList** head_ref, void *new_data, size_t data_size)
+void push(GList** head_ref, void *new_data, size_t data_size)
 {
     // Allocate memory for node
-    GList* new_node = (struct Node*)malloc(sizeof(struct GList));
+    GList* new_node = (struct Node*)malloc(sizeof(GList));
 
     new_node->data  = malloc(data_size);
     new_node->next = (*head_ref);
@@ -87,7 +87,7 @@ int isFull(GQueue* queue) {
 
 }
 
-int isEmpty(struct Queue* queue) {
+int isEmpty(struct GQueue* queue) {
 
 		// Check if queue size is 0
 		return (queue->size == 0);

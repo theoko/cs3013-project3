@@ -77,7 +77,7 @@ void push(GList** head_ref, void *new_data, size_t data_size);
 // Queue methods
 GQueue* createQueue(unsigned capacity);
 int isFull(GQueue* queue);
-int isEmpty(struct Queue* queue);
+int isEmpty(struct GQueue* queue);
 void enqueue(GQueue* queue, int item);
 int dequeue(GQueue* queue);
 int front(GQueue* queue);
