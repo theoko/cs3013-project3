@@ -37,7 +37,7 @@ typedef struct ninja_node {
   GList* visitTime; // List which will keep track of time spent on each visit
   GList* waitTime; // List which will keep track of time spent waiting
   fighter type;
-} ninja;
+} ninja_n;
 
 // Pirate:
 //  - owes
@@ -49,7 +49,7 @@ typedef struct pirate_node {
   GList* visitTime; // List which will keep track of time spent on each visit
   GList* waitTime; // List which will keep track of time spent waiting
   fighter type;
-} pirate;
+} pirate_n;
 
 // Team:
 //  - time busy
@@ -61,7 +61,7 @@ typedef struct team_node {
   GList* free; // List to keep track of time that a team is free
   int numOfCustomers;
   int gold;
-} team;
+} team_n;
 
 
 // Wardrobe synchronization methods
@@ -72,7 +72,7 @@ void leaveWardrobe(fighter f);
 long getDiffTime(struct timeval *start, struct timeval *end);
 
 // Linked list methods
-void push(struct Node** head_ref, void *new_data, size_t data_size);
+void push(GList** head_ref, void *new_data, size_t data_size);
 
 // Queue methods
 GQueue* createQueue(unsigned capacity);

@@ -39,10 +39,10 @@ long getDiffTime(struct timeval *start, struct timeval *end) {
 *							Linked list methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
-void push(struct Node** head_ref, void *new_data, size_t data_size)
+void push(struct GList** head_ref, void *new_data, size_t data_size)
 {
     // Allocate memory for node
-    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    GList* new_node = (struct Node*)malloc(sizeof(struct GList));
 
     new_node->data  = malloc(data_size);
     new_node->next = (*head_ref);
