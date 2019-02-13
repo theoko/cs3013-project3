@@ -28,7 +28,7 @@ typedef enum fighter_type {
 } fighter;
 
 typedef enum err_t {
-  correct_num
+  correct_num, invalid_costuming_time, invalid_arrival_time
 } error_type;
 
 // Ninja:

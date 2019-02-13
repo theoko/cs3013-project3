@@ -38,6 +38,10 @@ long getDiffTime(struct timeval *start, struct timeval *end) {
 void printErrorForEntity(char *entityName, error_type err) {
   if(err == correct_num) {
     printf("Not appropriate number of %s inputted\n", entityName);
+  } else if (err == invalid_costuming_time) {
+    printf("Average costuming time for %s cannot exceed 1440 seconds\n", entityName);
+  } else if (err = invalid_arrival_time) {
+    printf("Average arrival time for %s cannot exceed 1440 seconds\n", entityName);
   }
 }
 
@@ -185,7 +189,11 @@ int main(int argc, char **argv) {
           return -1;
   }
 
+  // Error types
   error_type correct_n = correct_num;
+  error_type invalid_costuming_t = invalid_costuming_time;
+  error_type invalid_arrival_t = invalid_arrival_time;
+
   unsigned int numOfTeams = (unsigned) atoi(argv[1]);
   if(numOfTeams < 2 || numOfTeams > 4) {
       printErrorForEntity("teams", correct_n);
@@ -202,10 +210,24 @@ int main(int argc, char **argv) {
   }
 
   int pirateAvgCostumingTime = atoi(argv[4]);
+  if(pirateAvgCostumingTime > 1440) {
+      printErrorForEntity("pirates", invalid_costuming_t);
+  }
+
   int ninjaAvgCostumingTime = atoi(argv[5]);
+  if(ninjaAvgCostumingTime > 1440) {
+      printErrorForEntity("ninjas", invalid_costuming_t);
+  }
 
   int pirateAvgArrivalTime = atoi(argv[6]);
+  if(pirateAvgArrivalTime > 1440) {
+      printErrorForEntity("pirates", invalid_arrival_t);
+  }
+
   int ninjaAvgArrivalTime = atoi(argv[7]);
+  if(ninjaAvgArrivalTime > 1440) {
+      printErrorForEntity("ninjas", invalid_arrival_t);
+  }
 
   // GQueue* ninja_queue = createQueue(numOfNinjas);
 
