@@ -40,7 +40,7 @@ void printErrorForEntity(char *entityName, error_type err) {
     printf("Not appropriate number of %s inputted\n", entityName);
   } else if (err == invalid_costuming_time) {
     printf("Average costuming time for %s cannot exceed 1440 seconds\n", entityName);
-  } else if (err = invalid_arrival_time) {
+  } else if (err == invalid_arrival_time) {
     printf("Average arrival time for %s cannot exceed 1440 seconds\n", entityName);
   }
 }
