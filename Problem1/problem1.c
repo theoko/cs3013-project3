@@ -50,6 +50,10 @@ long getDiffTime(struct timeval *start, struct timeval *end) {
     return diff;
 }
 
+void printArgErrorInfo() {
+	printf("./pn teams pirates ninjas pirateAvgCostumingTime ninjaAvgCostumingTime pirateAvgArrivalTime ninjaAvgArrivalTime\n");
+}
+
 void printErrorForEntity(char *entityName, error_type err) {
   if(err == correct_num) {
     printf("Not appropriate number of %s inputted\n", entityName);
@@ -157,10 +161,6 @@ int rear(GQueue* queue)
 *									Main()
 * * * * * * * * * * * * * * * * * * * * * * * */
 
-void printArgErrorInfo() {
-	printf("./pn teams pirates ninjas pirateAvgCostumingTime ninjaAvgCostumingTime pirateAvgArrivalTime ninjaAvgArrivalTime\n");
-}
-
 int main(int argc, char **argv) {
 	if(argc < 2) {
 					printf("Missing number of costuming teams.\n");
@@ -257,6 +257,11 @@ int main(int argc, char **argv) {
       printf("Exitting with %d error(s)\n", total_err);
       return -1;
   }
+
+  pthread_mutex_init(&print_mutex, NULL);
+
+  pthread_t pirates[numOfPirates];
+  pthread_t ninjas[numOfNinjas];
 
   // Initialize wardrobe
   initializeWardrobe(numOfPirates, numOfNinjas, numOfTeams);

@@ -68,6 +68,33 @@ typedef struct team_node {
   int gold;
 } team_n;
 
+// Costume department:
+//   - costume_mutex
+//   - costume_condition
+//   - status:
+//        -- 0: empty
+//        -- 1: pirate
+//        -- 2: ninja
+typedef struct costume_d {
+  pthread_mutex_t costume_mutex;
+  pthread_cond_t costume_condition;
+
+  int status;
+  int count_in_department;
+  int count_waiting;
+
+  int count_gold_ninjas;
+  int count_gold_pirates;
+
+  float average_queue_length; // Add numOfCustomers and divide by numOfTeams
+
+  int expenses; // Each costuming team costs 5 gold per day
+  
+  int gross_revenue;
+  int gold_per_visit;
+  int total_profits
+
+} costume_dept;
 
 // Wardrobe initialization methods
 void initializeWardrobe(int numOfPirates, int numOfNinjas, int numOfTeams);
@@ -78,6 +105,8 @@ void leaveWardrobe(fighter f);
 
 // Helper methods
 long getDiffTime(struct timeval *start, struct timeval *end);
+void printArgErrorInfo();
+void printErrorForEntity(char *entityName, error_type err);
 
 // Linked list methods
 void push(GList** head_ref, void *new_data, size_t data_size);
@@ -95,5 +124,7 @@ int rear(GQueue* queue);
 GQueue* pirate_queue;
 GQueue* ninja_queue;
 GQueue* mixed_queue;
+
+pthread_mutex_t print_mutex;
 
 #endif
