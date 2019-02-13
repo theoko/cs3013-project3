@@ -1,6 +1,21 @@
 #include "problem1.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * *
+*				Wardrobe initialization methods
+* * * * * * * * * * * * * * * * * * * * * * * */
+
+void initializeWardrobe(int numOfPirates, int numOfNinjas, int numOfTeams) {
+    pirate_queue = createQueue(numOfPirates);
+    ninja_queue = createQueue(numOfNinjas);
+
+    // if (numOfTeams == 3) {
+    //   mixed_queue = createQueue(pirate_queue->capacity / 3);
+    // }
+}
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * *
 *				Wardrobe synchronization methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -194,42 +209,56 @@ int main(int argc, char **argv) {
   error_type invalid_costuming_t = invalid_costuming_time;
   error_type invalid_arrival_t = invalid_arrival_time;
 
+  int total_err = 0;
+
   unsigned int numOfTeams = (unsigned) atoi(argv[1]);
   if(numOfTeams < 2 || numOfTeams > 4) {
       printErrorForEntity("teams", correct_n);
+      total_err++;
   }
 
   unsigned int numOfPirates = (unsigned) atoi(argv[2]);
   if(numOfPirates < 10 || numOfPirates > 50) {
       printErrorForEntity("pirates", correct_n);
+      total_err++;
   }
 
   unsigned int numOfNinjas = (unsigned) atoi(argv[3]);
   if(numOfNinjas < 10 || numOfNinjas > 50) {
       printErrorForEntity("ninjas", correct_n);
+      total_err++;
   }
 
   int pirateAvgCostumingTime = atoi(argv[4]);
   if(pirateAvgCostumingTime > 1440) {
       printErrorForEntity("pirates", invalid_costuming_t);
+      total_err++;
   }
 
   int ninjaAvgCostumingTime = atoi(argv[5]);
   if(ninjaAvgCostumingTime > 1440) {
       printErrorForEntity("ninjas", invalid_costuming_t);
+      total_err++;
   }
 
   int pirateAvgArrivalTime = atoi(argv[6]);
   if(pirateAvgArrivalTime > 1440) {
       printErrorForEntity("pirates", invalid_arrival_t);
+      total_err++;
   }
 
   int ninjaAvgArrivalTime = atoi(argv[7]);
   if(ninjaAvgArrivalTime > 1440) {
       printErrorForEntity("ninjas", invalid_arrival_t);
+      total_err++;
   }
 
-  // GQueue* ninja_queue = createQueue(numOfNinjas);
+  if(total_err > 0) {
+      printf("Exitting with %d error(s)\n", total_err);
+      return -1;
+  }
 
+  // Initialize wardrobe
+  initializeWardrobe(numOfPirates, numOfNinjas, numOfTeams);
 
 }

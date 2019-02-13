@@ -69,6 +69,9 @@ typedef struct team_node {
 } team_n;
 
 
+// Wardrobe initialization methods
+void initializeWardrobe(int numOfPirates, int numOfNinjas, int numOfTeams);
+
 // Wardrobe synchronization methods
 void enterWardrobe(fighter f);
 void leaveWardrobe(fighter f);
@@ -87,5 +90,10 @@ void enqueue(GQueue* queue, int item);
 int dequeue(GQueue* queue);
 int front(GQueue* queue);
 int rear(GQueue* queue);
+
+// Global variables
+GQueue* pirate_queue;
+GQueue* ninja_queue;
+GQueue* mixed_queue;
 
 #endif
