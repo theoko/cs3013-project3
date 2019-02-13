@@ -36,7 +36,7 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
 
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*	Costume department synchronization methods
+* Costume department synchronization methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 void enterCostumeDepartment(void *dresser) {
