@@ -286,12 +286,17 @@ int main(int argc, char **argv) {
   pthread_t pirates[numOfPirates];
   pthread_t ninjas[numOfNinjas];
 
-  // Initialize wardrobe
+  // Initialize costume department
   initializeCostumeDepartment(numOfPirates, numOfNinjas, numOfTeams);
 
   for(i = 0; i < numOfPirates; i++) {
 
       pirate_n *pirate = malloc(sizeof(pirate_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      if(!pirate) {
+        printf("Cannot malloc() for pirate!!!!!\n");
+        return -1;
+      }
+
       pirate->id = i;
       pthread_create(&pirates[i], NULL, Action, (void *) pirate); // TODO: Action
   }
@@ -299,16 +304,21 @@ int main(int argc, char **argv) {
   for(i = 0; i < numOfNinjas; i++) {
 
       ninja_n *ninja = malloc(sizeof(ninja_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      if(!ninja) {
+        printf("Cannot malloc() for ninja!!!!!\n");
+        return -1;
+      }
+
       ninja->id = i;
       pthread_create(&ninjas[i], NULL, Action, (void *) ninja); // Same as above for Action
   }
 
   for(i = 0; i < numOfPirates; i++) {
-      pthread_join(&pirates[i], NULL);
+      pthread_join(pirates[i], NULL);
   }
 
   for(i = 0; i < numOfNinjas; i++) {
-      pthread_join(&ninjas[i], NULL);
+      pthread_join(ninjas[i], NULL);
   }
 
   //TODO: Function that will finalize functionality of program (print some requested
