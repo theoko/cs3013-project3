@@ -113,16 +113,16 @@ void leaveCostumeDepartment(void *dresser) {
 
 void *Action(void *dresser) {
 
-    if (dresser->type == pirate) {
+    if ((*dresser).type == pirate) {
         printf("Started thread(pirate) with ID: %d\n", (pirate_n *) dresser->id);
 
         // Sleep for average arrival time of pirates before queueing
         sleep(pirateAvgArrivalTime);
 
         // Enqueue pirate
-        enqueue(&pirate_queue, (pirate_n *) dresser->id);
-    } else if (dresser->type == ninja) {
-        printf("Started thread(ninja) with ID: %d\n", (ninja_n *) dresser->id);
+        enqueue(&pirate_queue, (*dresser).id);
+    } else if ((*dresser).type == ninja) {
+        printf("Started thread(ninja) with ID: %d\n", (*dresser).id);
 
         // Sleep for average arrival time of ninjas before queueing
         sleep(ninjaAvgArrivalTime);
