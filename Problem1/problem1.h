@@ -105,8 +105,8 @@ typedef struct costume_d {
 void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams);
 
 // Wardrobe synchronization methods
-void enterCostumeDepartment(fighter f);
-void leaveCostumeDepartment(fighter f);
+void enterCostumeDepartment(void *dresser);
+void leaveCostumeDepartment(void *dresser);
 
 // Helper methods
 long getDiffTime(struct timeval *start, struct timeval *end);
@@ -132,6 +132,14 @@ GQueue* pirate_queue; // Queue to hold pirates
 GQueue* ninja_queue; // Queue to hold ninjas
 // DON'T NEED A MIXED_QUEUE
 
-pthread_mutex_t print_mutex;
+pthread_mutex_t print_mutex; // Mutex for printing
+
+unsigned int numOfTeams;
+unsigned int numOfPirates;
+unsigned int numOfNinjas;
+int pirateAvgCostumingTime;
+int ninjaAvgCostumingTime;
+int pirateAvgArrivalTime;
+int ninjaAvgArrivalTime;
 
 #endif

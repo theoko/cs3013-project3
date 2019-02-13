@@ -37,15 +37,90 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
 *	Costume department synchronization methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
-void enterCostumeDepartment(fighter f) {
+void enterCostumeDepartment(void *dresser) {
+
+    /* CRITICAL SECTION */
+    if (costume_department.status == 0) {
+        // Costume department is empty
+        double entityProb = drand48();
+
+        if(entityProb < .5) {
+            // Dequeue a pirate
+            int pirate_id = dequeue(&pirate_queue);
+
+            // Dress pirate
+            sleep(pirateAvgCostumingTime);
+        } else {
+            // Dequeue a ninja
+            int ninja_id = dequeue(&ninja_queue);
+
+            // Dress ninja
+            sleep(ninjaAvgCostumingTime);
+        }
+    } else if (costume_department.status == 1) {
+        // Costume department is occupied by pirate(s)
+        // Dequeue another pirate
+        int pirate_id = dequeue(&pirate_queue); // get id of pirate thread
+
+        if(pirate_id != INT_MIN) {
+            // Queue is not empty so we have another pirate to let in
+            sleep(pirateAvgCostumingTime * 2);
+        } else {
+            sleep(pirateAvgCostumingTime);
+        }
+    } else if (costume_department.status == 2) {
+        // Costume department is occupied by ninja(s)
+        // Dequeue another ninja
+        int ninja_id = dequeue(&ninja_queue); // get id of ninja thread
+
+        if(ninja_id != INT_MIN) {
+            // Queue is not empty so we have another ninja to let in
+            sleep(ninjaAvgCostumingTime * 2);
+        } else {
+            sleep(ninjaAvgCostumingTime);
+        }
+    }
+    /* END OF CRITICAL SECTION */
 
 }
 
-void leaveCostumeDepartment(fighter f) {
+void leaveCostumeDepartment(void *dresser) {
+
+  double returning = drand48();
+
+  // Check if dresser is returning
+  if(returning <= .25) { // 25% of saying yes
+      if (dresser->type == pirate) {
+          enqueue(&pirate_queue, dresser->id);
+      } else if (dresser->type == ninja) {
+          enqueue(&ninja_queue, dresser->id);
+      }
+  }
 
 }
 
 void *Action(void *dresser) {
+
+    if (dresser->type == pirate) {
+        // Sleep for average arrival time of pirates before queueing
+        sleep(pirateAvgArrivalTime);
+
+        // Enqueue pirate
+        enqueue(&pirate_queue, dresser->id);
+    } else if (dresser->type == ninja) {
+        // Sleep for average arrival time of ninjas before queueing
+        sleep(ninjaAvgArrivalTime);
+
+        // Enqueue ninja
+        enqueue(&ninja_queue, dresser->id);
+    }
+
+    // Try to acquire the lock
+    pthread_mutex_lock(&(costume_department->costume_mutex));
+    // while(!condition)
+    //     pthread_cond_wait(&(costume_department->costume_condition), &(costume_department->costume_mutex));
+    enterCostumeDepartment(dresser);
+    pthread_mutex_unlock(&(costume_department->costume_mutex));
 
 }
 
@@ -234,43 +309,43 @@ int main(int argc, char **argv) {
   int total_err = 0;
   unsigned int i;
 
-  unsigned int numOfTeams = (unsigned) atoi(argv[1]);
+  numOfTeams = (unsigned) atoi(argv[1]);
   if(numOfTeams < 2 || numOfTeams > 4) {
       printErrorForEntity("teams", correct_n);
       total_err++;
   }
 
-  unsigned int numOfPirates = (unsigned) atoi(argv[2]);
+  numOfPirates = (unsigned) atoi(argv[2]);
   if(numOfPirates < 10 || numOfPirates > 50) {
       printErrorForEntity("pirates", correct_n);
       total_err++;
   }
 
-  unsigned int numOfNinjas = (unsigned) atoi(argv[3]);
+  numOfNinjas = (unsigned) atoi(argv[3]);
   if(numOfNinjas < 10 || numOfNinjas > 50) {
       printErrorForEntity("ninjas", correct_n);
       total_err++;
   }
 
-  int pirateAvgCostumingTime = atoi(argv[4]);
+  pirateAvgCostumingTime = atoi(argv[4]);
   if(pirateAvgCostumingTime > 1440) {
       printErrorForEntity("pirates", invalid_costuming_t);
       total_err++;
   }
 
-  int ninjaAvgCostumingTime = atoi(argv[5]);
+  ninjaAvgCostumingTime = atoi(argv[5]);
   if(ninjaAvgCostumingTime > 1440) {
       printErrorForEntity("ninjas", invalid_costuming_t);
       total_err++;
   }
 
-  int pirateAvgArrivalTime = atoi(argv[6]);
+  pirateAvgArrivalTime = atoi(argv[6]);
   if(pirateAvgArrivalTime > 1440) {
       printErrorForEntity("pirates", invalid_arrival_t);
       total_err++;
   }
 
-  int ninjaAvgArrivalTime = atoi(argv[7]);
+  ninjaAvgArrivalTime = atoi(argv[7]);
   if(ninjaAvgArrivalTime > 1440) {
       printErrorForEntity("ninjas", invalid_arrival_t);
       total_err++;
@@ -298,6 +373,8 @@ int main(int argc, char **argv) {
       }
 
       pirate->id = i;
+      pirate->type = pirate;
+
       pthread_create(&pirates[i], NULL, Action, (void *) pirate); // TODO: Action
   }
 
@@ -310,6 +387,8 @@ int main(int argc, char **argv) {
       }
 
       ninja->id = i;
+      ninja->type = ninja;
+
       pthread_create(&ninjas[i], NULL, Action, (void *) ninja); // Same as above for Action
   }
 
