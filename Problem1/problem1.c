@@ -45,12 +45,16 @@ void enterCostumeDepartment(void *dresser) {
         double entityProb = drand48();
 
         if(entityProb < .5) {
+            costume_department.status = 1;
+
             // Dequeue a pirate
             int pirate_id = dequeue(&pirate_queue);
 
             // Dress pirate
             sleep(pirateAvgCostumingTime);
         } else {
+            costume_department.status = 2;
+
             // Dequeue a ninja
             int ninja_id = dequeue(&ninja_queue);
 
@@ -115,12 +119,15 @@ void *Action(void *dresser) {
         enqueue(&ninja_queue, dresser->id);
     }
 
-    // Try to acquire the lock
-    pthread_mutex_lock(&(costume_department->costume_mutex));
+    // Acquire the lock
+    pthread_mutex_lock(&(costume_department.costume_mutex));
     // while(!condition)
-    //     pthread_cond_wait(&(costume_department->costume_condition), &(costume_department->costume_mutex));
-    enterCostumeDepartment(dresser);
-    pthread_mutex_unlock(&(costume_department->costume_mutex));
+        pthread_cond_wait(&(costume_department.costume_condition), &(costume_department.costume_mutex));
+
+    enterCostumeDepartment(dresser); // Enter costume department
+    leaveCostumeDepartment(dresser); // Leave costume department
+
+    pthread_mutex_unlock(&(costume_department.costume_mutex));
 
 }
 
