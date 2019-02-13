@@ -9,4 +9,4 @@ pn.o:
 	gcc $(CFLAGS) -c problem1.c
 
 clean:
-	rm -rf pn.o pn
+	rm -rf *.o pn
