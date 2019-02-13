@@ -27,6 +27,10 @@ typedef enum fighter_type {
   ninja, pirate
 } fighter;
 
+typedef enum err_t {
+  correct_num
+} error_type;
+
 // Ninja:
 //  - owes
 //  - number of visits

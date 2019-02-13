@@ -35,6 +35,12 @@ long getDiffTime(struct timeval *start, struct timeval *end) {
     return diff;
 }
 
+void printErrorForEntity(char *entityName, error_type err) {
+  if(err == correct_num) {
+    printf("Not appropriate number of %s inputted\n", entityName);
+  }
+}
+
 /* * * * * * * * * * * * * * * * * * * * * * *
 *							Linked list methods
 * * * * * * * * * * * * * * * * * * * * * * * */
@@ -179,6 +185,29 @@ int main(int argc, char **argv) {
           return -1;
   }
 
+  error_type correct_n = correct_num;
+  unsigned int numOfTeams = (unsigned) atoi(argv[1]);
+  if(numOfTeams < 2 || numOfTeams > 4) {
+      printErrorForEntity("teams", correct_n);
+  }
+
+  unsigned int numOfPirates = (unsigned) atoi(argv[2]);
+  if(numOfPirates < 10 || numOfPirates > 50) {
+      printErrorForEntity("pirates", correct_n);
+  }
+
+  unsigned int numOfNinjas = (unsigned) atoi(argv[3]);
+  if(numOfNinjas < 10 || numOfNinjas > 50) {
+      printErrorForEntity("ninjas", correct_n);
+  }
+
+  int pirateAvgCostumingTime = atoi(argv[4]);
+  int ninjaAvgCostumingTime = atoi(argv[5]);
+
+  int pirateAvgArrivalTime = atoi(argv[6]);
+  int ninjaAvgArrivalTime = atoi(argv[7]);
+
+  // GQueue* ninja_queue = createQueue(numOfNinjas);
 
 
 }
