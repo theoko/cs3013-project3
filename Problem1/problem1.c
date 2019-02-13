@@ -52,7 +52,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
 
             int tmp_pirate = dequeue(pirate_queue);
             while (tmp_pirate != dresser->id) {
-                enqueue(tmp_pirate);
+                enqueue(pirate_queue, tmp_pirate);
 
                 tmp_pirate = dequeue(pirate_queue);
             }
@@ -70,7 +70,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
 
             int tmp_ninja = dequeue(ninja_queue);
             while (tmp_ninja != dresser->id) {
-                enqueue(tmp_ninja);
+                enqueue(ninja_queue, tmp_ninja);
 
                 tmp_ninja = dequeue(pirate_queue);
             }
@@ -86,7 +86,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
     } else if (costume_department.status == 1 && !isEmpty(pirate_queue)) {
         int tmp_pirate = dequeue(pirate_queue);
         while (tmp_pirate != dresser->id) {
-            enqueue(tmp_pirate);
+            enqueue(pirate_queue, tmp_pirate);
 
             tmp_pirate = dequeue(pirate_queue);
         }
@@ -104,7 +104,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
 
         int tmp_ninja = dequeue(ninja_queue);
         while (tmp_ninja != dresser->id) {
-            enqueue(tmp_ninja);
+            enqueue(ninja_queue, tmp_ninja);
 
             tmp_ninja = dequeue(pirate_queue);
         }
@@ -166,22 +166,22 @@ void *Action(void *dresser) {
 
 
 
-    if(costume_department.state == 1 && fn->type == pirate || costume_department.state == 2 && fn->type == ninja) {
+    //if((costume_department.status == 1 && fn->type == pirate) || (costume_department.status == 2 && fn->type == ninja)) {
 
-      if (fn->type == ninja)
-        printf("Ninja %d: Entering costume department together with other ninja(s)\n", fn->id);
-      else
-        printf("Pirate %d: Entering costume department together with other pirate(s)\n", fn->id);
+      //if (fn->type == ninja)
+      //  printf("Ninja %d: Entering costume department together with other ninja(s)\n", fn->id);
+      //else
+      //  printf("Pirate %d: Entering costume department together with other pirate(s)\n", fn->id);
 
-      enterCostumeDepartment(fn);
-      leaveCostumeDepartment(fn);
+      //enterCostumeDepartment(fn);
+      //leaveCostumeDepartment(fn);
 
-      if (fn->type == ninja)
-        printf("Ninja %d: Leaving costume department\n", fn->id);
-      else
-        printf("Pirate %d: Leaving costume department\n", fn->id);
+      //if (fn->type == ninja)
+      //  printf("Ninja %d: Leaving costume department\n", fn->id);
+      //else
+      //  printf("Pirate %d: Leaving costume department\n", fn->id);
 
-    } else {
+    //} else {
 
     // Acquire the lock
     if (fn->type == ninja)
@@ -191,8 +191,8 @@ void *Action(void *dresser) {
 
     pthread_mutex_lock(&(costume_department.costume_mutex));
 
-    while(!condition)
-        pthread_cond_wait(&(costume_department.costume_condition), &(costume_department.costume_mutex));
+    //while(!condition)
+        //pthread_cond_wait(&(costume_department.costume_condition), &(costume_department.costume_mutex));
 
     enterCostumeDepartment(fn); // Enter costume department
     leaveCostumeDepartment(fn); // Leave costume department
@@ -204,7 +204,7 @@ void *Action(void *dresser) {
     else
       printf("Pirate %d: Releasing lock\n", fn->id);
 
-    }
+    //}
 
 
     return fn;
