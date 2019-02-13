@@ -66,23 +66,13 @@ void enterCostumeDepartment(void *dresser) {
         // Dequeue another pirate
         int pirate_id = dequeue(&pirate_queue); // get id of pirate thread
 
-        if(pirate_id != INT_MIN) {
-            // Queue is not empty so we have another pirate to let in
-            sleep(pirateAvgCostumingTime * 2);
-        } else {
-            sleep(pirateAvgCostumingTime);
-        }
+        sleep(pirateAvgCostumingTime);
     } else if (costume_department.status == 2) {
         // Costume department is occupied by ninja(s)
         // Dequeue another ninja
         int ninja_id = dequeue(&ninja_queue); // get id of ninja thread
 
-        if(ninja_id != INT_MIN) {
-            // Queue is not empty so we have another ninja to let in
-            sleep(ninjaAvgCostumingTime * 2);
-        } else {
-            sleep(ninjaAvgCostumingTime);
-        }
+        sleep(ninjaAvgCostumingTime);
     }
     /* END OF CRITICAL SECTION */
 
