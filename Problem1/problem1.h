@@ -33,32 +33,41 @@ typedef enum err_t {
   correct_num, invalid_costuming_time, invalid_arrival_time
 } error_type;
 
-// Ninja:
-//  - owes
-//  - number of visits
-//  - visit time
-//  - time waiting
-typedef struct ninja_node {
+typedef struct fighter_node {
   int id; // number to help identify corresponding thread
   int owes; // Amount of gold owed
   int numOfVisits; // Number of visits
   GList* visitTime; // List which will keep track of time spent on each visit
   GList* waitTime; // List which will keep track of time spent waiting
   fighter type;
-} ninja_n;
+} fighter_n;
 
-// Pirate:
-//  - owes
-//  - number of visits
-//  - time waiting
-typedef struct pirate_node {
-  int id; // number to help identify corresponding thread
-  int owes; // Amount of gold owed
-  int numOfVisits;
-  GList* visitTime; // List which will keep track of time spent on each visit
-  GList* waitTime; // List which will keep track of time spent waiting
-  fighter type;
-} pirate_n;
+// // Ninja:
+// //  - owes
+// //  - number of visits
+// //  - visit time
+// //  - time waiting
+// typedef struct ninja_node {
+//   int id; // number to help identify corresponding thread
+//   int owes; // Amount of gold owed
+//   int numOfVisits; // Number of visits
+//   GList* visitTime; // List which will keep track of time spent on each visit
+//   GList* waitTime; // List which will keep track of time spent waiting
+//   fighter type;
+// } ninja_n;
+//
+// // Pirate:
+// //  - owes
+// //  - number of visits
+// //  - time waiting
+// typedef struct pirate_node {
+//   int id; // number to help identify corresponding thread
+//   int owes; // Amount of gold owed
+//   int numOfVisits;
+//   GList* visitTime; // List which will keep track of time spent on each visit
+//   GList* waitTime; // List which will keep track of time spent waiting
+//   fighter type;
+// } pirate_n;
 
 // Team:
 //  - time busy

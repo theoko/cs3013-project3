@@ -39,7 +39,7 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
 * Costume department synchronization methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
-void enterCostumeDepartment(void *dresser) {
+void enterCostumeDepartment(fighter_n *dresser) {
 
     condition = 0;
 
@@ -94,9 +94,10 @@ void enterCostumeDepartment(void *dresser) {
     pthread_cond_signal(&(costume_department.costume_condition));
 }
 
-void leaveCostumeDepartment(void *dresser) {
+void leaveCostumeDepartment(fighter_n *dresser) {
 
   /* CRITICAL SECTION */
+
   double returning = drand48();
 
   // Check if dresser is returning
@@ -113,22 +114,24 @@ void leaveCostumeDepartment(void *dresser) {
 
 void *Action(void *dresser) {
 
-    if ((*dresser).type == pirate) {
-        printf("Started thread(pirate) with ID: %d\n", (pirate_n *) dresser->id);
+    fighter_n *fn = (fighter_n *) dresser;
+
+    if (fn->type == pirate) {
+        printf("Started thread(pirate) with ID: %d\n", fn->id);
 
         // Sleep for average arrival time of pirates before queueing
         sleep(pirateAvgArrivalTime);
 
         // Enqueue pirate
-        enqueue(&pirate_queue, (*dresser).id);
-    } else if ((*dresser).type == ninja) {
-        printf("Started thread(ninja) with ID: %d\n", (*dresser).id);
+        enqueue(&pirate_queue, fn->id);
+    } else if (fn->type == ninja) {
+        printf("Started thread(ninja) with ID: %d\n", fn->id);
 
         // Sleep for average arrival time of ninjas before queueing
         sleep(ninjaAvgArrivalTime);
 
         // Enqueue ninja
-        enqueue(&ninja_queue, (ninja_n *) dresser->id);
+        enqueue(&ninja_queue, fn->id);
     }
 
     // Acquire the lock
@@ -137,8 +140,8 @@ void *Action(void *dresser) {
     while(!condition)
         pthread_cond_wait(&(costume_department.costume_condition), &(costume_department.costume_mutex));
 
-    enterCostumeDepartment(dresser); // Enter costume department
-    leaveCostumeDepartment(dresser); // Leave costume department
+    enterCostumeDepartment(fn); // Enter costume department
+    leaveCostumeDepartment(fn); // Leave costume department
 
     pthread_mutex_unlock(&(costume_department.costume_mutex));
 
@@ -389,7 +392,7 @@ int main(int argc, char **argv) {
 
   for(i = 0; i < numOfPirates; i++) {
 
-      pirate_n *pirate = malloc(sizeof(pirate_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      fighter_n *pirate = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
       if(!pirate) {
         printf("Cannot malloc() for pirate!!!!!\n");
         return -1;
@@ -403,7 +406,7 @@ int main(int argc, char **argv) {
 
   for(i = 0; i < numOfNinjas; i++) {
 
-      ninja_n *ninja = malloc(sizeof(ninja_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      fighter_n *ninja = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
       if(!ninja) {
         printf("Cannot malloc() for ninja!!!!!\n");
         return -1;
