@@ -8,6 +8,8 @@
 #include <sys/time.h>
 #include <limits.h>
 
+#define SEED_VAL (100)
+
 // General linked list
 typedef struct g_list
 {
@@ -133,6 +135,7 @@ GQueue* ninja_queue; // Queue to hold ninjas
 // DON'T NEED A MIXED_QUEUE
 
 pthread_mutex_t print_mutex; // Mutex for printing
+int condition;
 
 unsigned int numOfTeams;
 unsigned int numOfPirates;

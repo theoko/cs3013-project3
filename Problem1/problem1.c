@@ -8,6 +8,8 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
 
     pthread_mutex_init(&(costume_department.costume_mutex), NULL);
     pthread_cond_init(&(costume_department.costume_condition), NULL);
+    condition = 0;
+
     costume_department.status = 0;
 
     costume_department.count_in_department = 0;
@@ -39,13 +41,16 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
 
 void enterCostumeDepartment(void *dresser) {
 
+    condition = 0;
+
     /* CRITICAL SECTION */
     if (costume_department.status == 0) {
         // Costume department is empty
         double entityProb = drand48();
 
-        if(entityProb < .5) {
+        if(entityProb < .5 && !isEmpty(&pirate_queue)) {
             costume_department.status = 1;
+            costume_department.count_in_department++;
 
             // Dequeue a pirate
             int pirate_id = dequeue(&pirate_queue);
@@ -53,7 +58,11 @@ void enterCostumeDepartment(void *dresser) {
             // Dress pirate
             sleep(pirateAvgCostumingTime);
         } else {
+            if(isEmpty(&ninja_queue))
+                return;
+
             costume_department.status = 2;
+            costume_department.count_in_department++;
 
             // Dequeue a ninja
             int ninja_id = dequeue(&ninja_queue);
@@ -61,25 +70,33 @@ void enterCostumeDepartment(void *dresser) {
             // Dress ninja
             sleep(ninjaAvgCostumingTime);
         }
-    } else if (costume_department.status == 1) {
+    } else if (costume_department.status == 1 && !isEmpty(&pirate_queue)) {
         // Costume department is occupied by pirate(s)
         // Dequeue another pirate
+        costume_department.count_in_department++;
         int pirate_id = dequeue(&pirate_queue); // get id of pirate thread
 
         sleep(pirateAvgCostumingTime);
-    } else if (costume_department.status == 2) {
+    } else {
+        if(isEmpty(&ninja_queue))
+            return;
+
         // Costume department is occupied by ninja(s)
         // Dequeue another ninja
+        costume_department.count_in_department++;
         int ninja_id = dequeue(&ninja_queue); // get id of ninja thread
 
         sleep(ninjaAvgCostumingTime);
     }
     /* END OF CRITICAL SECTION */
 
+    condition = 1;
+    pthread_cond_signal(&(costume_department.costume_condition));
 }
 
 void leaveCostumeDepartment(void *dresser) {
 
+  /* CRITICAL SECTION */
   double returning = drand48();
 
   // Check if dresser is returning
@@ -90,18 +107,23 @@ void leaveCostumeDepartment(void *dresser) {
           enqueue(&ninja_queue, dresser->id);
       }
   }
+  /* END OF CRITICAL SECTION */
 
 }
 
 void *Action(void *dresser) {
 
     if (dresser->type == pirate) {
+        printf("Started thread(pirate) with ID: %d\n", dresser->id);
+
         // Sleep for average arrival time of pirates before queueing
         sleep(pirateAvgArrivalTime);
 
         // Enqueue pirate
         enqueue(&pirate_queue, dresser->id);
     } else if (dresser->type == ninja) {
+        printf("Started thread(ninja) with ID: %d\n", dresser->id);
+
         // Sleep for average arrival time of ninjas before queueing
         sleep(ninjaAvgArrivalTime);
 
@@ -111,7 +133,8 @@ void *Action(void *dresser) {
 
     // Acquire the lock
     pthread_mutex_lock(&(costume_department.costume_mutex));
-    // while(!condition)
+
+    while(!condition)
         pthread_cond_wait(&(costume_department.costume_condition), &(costume_department.costume_mutex));
 
     enterCostumeDepartment(dresser); // Enter costume department
@@ -256,6 +279,9 @@ int rear(GQueue* queue)
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 int main(int argc, char **argv) {
+
+  srand48(SEED_VAL);
+
 	if(argc < 2) {
 					printf("Missing number of costuming teams.\n");
 					printArgErrorInfo();
@@ -392,10 +418,12 @@ int main(int argc, char **argv) {
   for(i = 0; i < numOfPirates; i++) {
       pthread_join(pirates[i], NULL);
   }
+  printf("Pirates done.\n");
 
   for(i = 0; i < numOfNinjas; i++) {
       pthread_join(ninjas[i], NULL);
   }
+  printf("Ninjas done.\n");
 
   //TODO: Function that will finalize functionality of program (print some requested
   //      stats, get time when program is about to finish etc.)
