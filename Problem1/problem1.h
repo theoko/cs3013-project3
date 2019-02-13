@@ -130,7 +130,7 @@ costume_dept costume_department; // Struct that holds the costume department pro
 
 GQueue* pirate_queue; // Queue to hold pirates
 GQueue* ninja_queue; // Queue to hold ninjas
-GQueue* mixed_queue; // Queue to hold both pirates and ninjas
+// DON'T NEED A MIXED_QUEUE
 
 pthread_mutex_t print_mutex;
 

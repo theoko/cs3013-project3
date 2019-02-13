@@ -6,32 +6,29 @@
 
 void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams) {
 
-    pthread_mutex_init(&(costume_department->costume_mutex), NULL);
-    pthread_cond_init(&(costume_department->costume_condition), NULL);
-    costume_department->status = 0;
+    pthread_mutex_init(&(costume_department.costume_mutex), NULL);
+    pthread_cond_init(&(costume_department.costume_condition), NULL);
+    costume_department.status = 0;
 
-    costume_department->count_in_department = 0;
-    costume_department->count_waiting = 0;
+    costume_department.count_in_department = 0;
+    costume_department.count_waiting = 0;
 
-    costume_department->count_gold_ninjas = 0;
-    costume_department->count_gold_pirates = 0;
+    costume_department.count_gold_ninjas = 0;
+    costume_department.count_gold_pirates = 0;
 
-    costume_department->average_queue_length = 0.0; // Add numOfCustomers and divide by numOfTeams
+    costume_department.average_queue_length = 0.0; // Add numOfCustomers and divide by numOfTeams
 
-    costume_department->expenses = 0; // Each costuming team costs 5 gold per day
+    costume_department.expenses = 0; // Each costuming team costs 5 gold per day
 
-    costume_department->gross_revenue = 0;
-    costume_department->gold_per_visit = 0;
-    costume_department->total_profits = 0;
+    costume_department.gross_revenue = 0;
+    costume_department.gold_per_visit = 0;
+    costume_department.total_profits = 0;
 
-    gettimeofday(&(costume_department->start),  NULL);
+    gettimeofday(&(costume_department.start),  NULL);
 
     pirate_queue = createQueue(numOfPirates);
     ninja_queue = createQueue(numOfNinjas);
 
-    // if (numOfTeams == 3) {
-    //   mixed_queue = createQueue(pirate_queue->capacity / 3);
-    // }
 }
 
 
@@ -294,14 +291,14 @@ int main(int argc, char **argv) {
 
   for(i = 0; i < numOfPirates; i++) {
 
-      pirate_n *pirate = malloc(sizeof(pirate_n *)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      pirate_n *pirate = malloc(sizeof(pirate_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
       pirate->id = i;
       pthread_create(&pirates[i], NULL, Action, (void *) pirate); // TODO: Action
   }
 
   for(i = 0; i < numOfNinjas; i++) {
 
-      ninja_n *ninja = malloc(sizeof(ninja_n *)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      ninja_n *ninja = malloc(sizeof(ninja_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
       ninja->id = i;
       pthread_create(&ninjas[i], NULL, Action, (void *) ninja); // Same as above for Action
   }
