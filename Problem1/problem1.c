@@ -4,7 +4,28 @@
 *				Wardrobe initialization methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
-void initializeWardrobe(int numOfPirates, int numOfNinjas, int numOfTeams) {
+void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams) {
+
+    pthread_mutex_init(&(costume_department->costume_mutex), NULL);
+    pthread_cond_init(&(costume_department->costume_condition), NULL);
+    costume_department->status = 0;
+
+    costume_department->count_in_department = 0;
+    costume_department->count_waiting = 0;
+
+    costume_department->count_gold_ninjas = 0;
+    costume_department->count_gold_pirates = 0;
+
+    costume_department->average_queue_length = 0.0; // Add numOfCustomers and divide by numOfTeams
+
+    costume_department->expenses = 0; // Each costuming team costs 5 gold per day
+
+    costume_department->gross_revenue = 0;
+    costume_department->gold_per_visit = 0;
+    costume_department->total_profits = 0;
+
+    gettimeofday(&(costume_department->start),  NULL);
+
     pirate_queue = createQueue(numOfPirates);
     ninja_queue = createQueue(numOfNinjas);
 
@@ -210,6 +231,7 @@ int main(int argc, char **argv) {
   error_type invalid_arrival_t = invalid_arrival_time;
 
   int total_err = 0;
+  unsigned int i;
 
   unsigned int numOfTeams = (unsigned) atoi(argv[1]);
   if(numOfTeams < 2 || numOfTeams > 4) {
@@ -264,6 +286,10 @@ int main(int argc, char **argv) {
   pthread_t ninjas[numOfNinjas];
 
   // Initialize wardrobe
-  initializeWardrobe(numOfPirates, numOfNinjas, numOfTeams);
+  initializeCostumeDepartment(numOfPirates, numOfNinjas, numOfTeams);
+
+  for(i = 0; i < numOfPirates; i++) {
+    // pthread_create();
+  }
 
 }

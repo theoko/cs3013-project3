@@ -89,15 +89,18 @@ typedef struct costume_d {
   float average_queue_length; // Add numOfCustomers and divide by numOfTeams
 
   int expenses; // Each costuming team costs 5 gold per day
-  
+
   int gross_revenue;
   int gold_per_visit;
-  int total_profits
+  int total_profits;
+
+  struct timeval start;
+  struct timeval end;
 
 } costume_dept;
 
 // Wardrobe initialization methods
-void initializeWardrobe(int numOfPirates, int numOfNinjas, int numOfTeams);
+void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams);
 
 // Wardrobe synchronization methods
 void enterWardrobe(fighter f);
@@ -121,6 +124,8 @@ int front(GQueue* queue);
 int rear(GQueue* queue);
 
 // Global variables
+costume_dept costume_department;
+
 GQueue* pirate_queue;
 GQueue* ninja_queue;
 GQueue* mixed_queue;
