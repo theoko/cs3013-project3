@@ -1,7 +1,7 @@
 #include "problem1.h"
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*				Wardrobe initialization methods
+* Costume department initialization methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams) {
@@ -37,14 +37,14 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
 
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*				Wardrobe synchronization methods
+*	Costume department synchronization methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
-void enterWardrobe(fighter f) {
+void enterCostumeDepartment(fighter f) {
 
 }
 
-void leaveWardrobe(fighter f) {
+void leaveCostumeDepartment(fighter f) {
 
 }
 
@@ -53,7 +53,7 @@ void *Action(void *dresser) {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*								Helper methods
+* Helper methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 long getDiffTime(struct timeval *start, struct timeval *end) {
@@ -90,7 +90,7 @@ void printErrorForEntity(char *entityName, error_type err) {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*							Linked list methods
+*	Linked list methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 void push(GList** head_ref, void *new_data, size_t data_size)
@@ -112,7 +112,7 @@ void push(GList** head_ref, void *new_data, size_t data_size)
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*								Queue methods
+*	Queue methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 GQueue* createQueue(unsigned capacity) {
@@ -183,7 +183,7 @@ int rear(GQueue* queue)
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*									Main()
+*	Main()
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 int main(int argc, char **argv) {

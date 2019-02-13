@@ -50,7 +50,7 @@ typedef struct ninja_node {
 //  - number of visits
 //  - time waiting
 typedef struct pirate_node {
-  int id; // number to help identify corresponding thread 
+  int id; // number to help identify corresponding thread
   int owes; // Amount of gold owed
   int numOfVisits;
   GList* visitTime; // List which will keep track of time spent on each visit
@@ -105,8 +105,8 @@ typedef struct costume_d {
 void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams);
 
 // Wardrobe synchronization methods
-void enterWardrobe(fighter f);
-void leaveWardrobe(fighter f);
+void enterCostumeDepartment(fighter f);
+void leaveCostumeDepartment(fighter f);
 
 // Helper methods
 long getDiffTime(struct timeval *start, struct timeval *end);
@@ -126,11 +126,11 @@ int front(GQueue* queue);
 int rear(GQueue* queue);
 
 // Global variables
-costume_dept costume_department;
+costume_dept costume_department; // Struct that holds the costume department properties
 
-GQueue* pirate_queue;
-GQueue* ninja_queue;
-GQueue* mixed_queue;
+GQueue* pirate_queue; // Queue to hold pirates
+GQueue* ninja_queue; // Queue to hold ninjas
+GQueue* mixed_queue; // Queue to hold both pirates and ninjas
 
 pthread_mutex_t print_mutex;
 
