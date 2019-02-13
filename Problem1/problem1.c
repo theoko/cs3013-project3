@@ -41,7 +41,7 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
 
 void enterCostumeDepartment(fighter_n *dresser) {
 
-    condition = 0;
+    condition = 1;
 
     /* CRITICAL SECTION */
     if (costume_department.status == 0) {
@@ -49,48 +49,78 @@ void enterCostumeDepartment(fighter_n *dresser) {
         double entityProb = drand48();
 
         if(entityProb < .5 && !isEmpty(pirate_queue)) {
+
+            int tmp_pirate = dequeue(pirate_queue);
+            while (tmp_pirate != dresser->id) {
+                enqueue(tmp_pirate);
+
+                tmp_pirate = dequeue(pirate_queue);
+            }
+
             costume_department.status = 1;
             costume_department.count_in_department++;
 
-            // Dequeue a pirate
-            int pirate_id = dequeue(pirate_queue);
-
             // Dress pirate
+            printf("Dressing pirate %d\n", dresser->id);
             sleep(pirateAvgCostumingTime);
+            costume_department.count_in_department--;
         } else {
             if(isEmpty(ninja_queue))
                 return;
 
+            int tmp_ninja = dequeue(ninja_queue);
+            while (tmp_ninja != dresser->id) {
+                enqueue(tmp_ninja);
+
+                tmp_ninja = dequeue(pirate_queue);
+            }
+
             costume_department.status = 2;
             costume_department.count_in_department++;
 
-            // Dequeue a ninja
-            int ninja_id = dequeue(ninja_queue);
-
             // Dress ninja
+            printf("Dressing ninja %d\n", dresser->id);
             sleep(ninjaAvgCostumingTime);
+            costume_department.count_in_department--;
         }
     } else if (costume_department.status == 1 && !isEmpty(pirate_queue)) {
+        int tmp_pirate = dequeue(pirate_queue);
+        while (tmp_pirate != dresser->id) {
+            enqueue(tmp_pirate);
+
+            tmp_pirate = dequeue(pirate_queue);
+        }
+
         // Costume department is occupied by pirate(s)
         // Dequeue another pirate
         costume_department.count_in_department++;
-        int pirate_id = dequeue(pirate_queue); // get id of pirate thread
 
+        printf("Dressing another pirate %d\n", dresser->id);
         sleep(pirateAvgCostumingTime);
+        costume_department.count_in_department--;
     } else {
         if(isEmpty(ninja_queue))
             return;
 
+        int tmp_ninja = dequeue(ninja_queue);
+        while (tmp_ninja != dresser->id) {
+            enqueue(tmp_ninja);
+
+            tmp_ninja = dequeue(pirate_queue);
+        }
+
         // Costume department is occupied by ninja(s)
         // Dequeue another ninja
         costume_department.count_in_department++;
-        int ninja_id = dequeue(ninja_queue); // get id of ninja thread
 
+        printf("Dressing another ninja %d\n", dresser->id);
         sleep(ninjaAvgCostumingTime);
+        costume_department.count_in_department--;
     }
     /* END OF CRITICAL SECTION */
 
-    condition = 1;
+    condition = 0;
+
     pthread_cond_signal(&(costume_department.costume_condition));
 }
 
@@ -134,7 +164,31 @@ void *Action(void *dresser) {
         enqueue(ninja_queue, fn->id);
     }
 
+
+
+    if(costume_department.state == 1 && fn->type == pirate || costume_department.state == 2 && fn->type == ninja) {
+
+      if (fn->type == ninja)
+        printf("Ninja %d: Entering costume department together with other ninja(s)\n", fn->id);
+      else
+        printf("Pirate %d: Entering costume department together with other pirate(s)\n", fn->id);
+
+      enterCostumeDepartment(fn);
+      leaveCostumeDepartment(fn);
+
+      if (fn->type == ninja)
+        printf("Ninja %d: Leaving costume department\n", fn->id);
+      else
+        printf("Pirate %d: Leaving costume department\n", fn->id);
+
+    } else {
+
     // Acquire the lock
+    if (fn->type == ninja)
+      printf("Ninja %d: Acquiring lock\n", fn->id);
+    else
+      printf("Pirate %d: Acquiring lock\n", fn->id);
+
     pthread_mutex_lock(&(costume_department.costume_mutex));
 
     while(!condition)
@@ -144,6 +198,14 @@ void *Action(void *dresser) {
     leaveCostumeDepartment(fn); // Leave costume department
 
     pthread_mutex_unlock(&(costume_department.costume_mutex));
+
+    if (fn->type == ninja)
+      printf("Ninja %d: Releasing lock\n", fn->id);
+    else
+      printf("Pirate %d: Releasing lock\n", fn->id);
+
+    }
+
 
     return fn;
 
