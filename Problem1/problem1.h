@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include <semaphore.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <limits.h>
 
@@ -116,8 +116,8 @@ typedef struct costume_d {
 void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams);
 
 // Wardrobe synchronization methods
-void enterCostumeDepartment(void *dresser);
-void leaveCostumeDepartment(void *dresser);
+void enterCostumeDepartment(fighter_n *dresser);
+void leaveCostumeDepartment(fighter_n *dresser);
 
 // Helper methods
 long getDiffTime(struct timeval *start, struct timeval *end);

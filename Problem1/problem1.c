@@ -48,43 +48,43 @@ void enterCostumeDepartment(fighter_n *dresser) {
         // Costume department is empty
         double entityProb = drand48();
 
-        if(entityProb < .5 && !isEmpty(&pirate_queue)) {
+        if(entityProb < .5 && !isEmpty(pirate_queue)) {
             costume_department.status = 1;
             costume_department.count_in_department++;
 
             // Dequeue a pirate
-            int pirate_id = dequeue(&pirate_queue);
+            int pirate_id = dequeue(pirate_queue);
 
             // Dress pirate
             sleep(pirateAvgCostumingTime);
         } else {
-            if(isEmpty(&ninja_queue))
+            if(isEmpty(ninja_queue))
                 return;
 
             costume_department.status = 2;
             costume_department.count_in_department++;
 
             // Dequeue a ninja
-            int ninja_id = dequeue(&ninja_queue);
+            int ninja_id = dequeue(ninja_queue);
 
             // Dress ninja
             sleep(ninjaAvgCostumingTime);
         }
-    } else if (costume_department.status == 1 && !isEmpty(&pirate_queue)) {
+    } else if (costume_department.status == 1 && !isEmpty(pirate_queue)) {
         // Costume department is occupied by pirate(s)
         // Dequeue another pirate
         costume_department.count_in_department++;
-        int pirate_id = dequeue(&pirate_queue); // get id of pirate thread
+        int pirate_id = dequeue(pirate_queue); // get id of pirate thread
 
         sleep(pirateAvgCostumingTime);
     } else {
-        if(isEmpty(&ninja_queue))
+        if(isEmpty(ninja_queue))
             return;
 
         // Costume department is occupied by ninja(s)
         // Dequeue another ninja
         costume_department.count_in_department++;
-        int ninja_id = dequeue(&ninja_queue); // get id of ninja thread
+        int ninja_id = dequeue(ninja_queue); // get id of ninja thread
 
         sleep(ninjaAvgCostumingTime);
     }
@@ -103,9 +103,9 @@ void leaveCostumeDepartment(fighter_n *dresser) {
   // Check if dresser is returning
   if(returning <= .25) { // 25% of saying yes
       if (dresser->type == pirate) {
-          enqueue(&pirate_queue, dresser->id);
+          enqueue(pirate_queue, dresser->id);
       } else if (dresser->type == ninja) {
-          enqueue(&ninja_queue, dresser->id);
+          enqueue(ninja_queue, dresser->id);
       }
   }
   /* END OF CRITICAL SECTION */
@@ -123,7 +123,7 @@ void *Action(void *dresser) {
         sleep(pirateAvgArrivalTime);
 
         // Enqueue pirate
-        enqueue(&pirate_queue, fn->id);
+        enqueue(pirate_queue, fn->id);
     } else if (fn->type == ninja) {
         printf("Started thread(ninja) with ID: %d\n", fn->id);
 
@@ -131,7 +131,7 @@ void *Action(void *dresser) {
         sleep(ninjaAvgArrivalTime);
 
         // Enqueue ninja
-        enqueue(&ninja_queue, fn->id);
+        enqueue(ninja_queue, fn->id);
     }
 
     // Acquire the lock
@@ -144,6 +144,8 @@ void *Action(void *dresser) {
     leaveCostumeDepartment(fn); // Leave costume department
 
     pthread_mutex_unlock(&(costume_department.costume_mutex));
+
+    return fn;
 
 }
 
@@ -286,13 +288,13 @@ int main(int argc, char **argv) {
   srand48(SEED_VAL);
 
 	if(argc < 2) {
-					printf("Missing number of costuming teams.\n");
-					printArgErrorInfo();
-					return -1;
+	  printf("Missing number of costuming teams.\n");
+	  printArgErrorInfo();
+	  return -1;
 	}
 
 	if(argc < 3) {
-					printf("Missing number of pirates.\n");
+	  printf("Missing number of pirates.\n");
           printArgErrorInfo();
           return -1;
 	}
@@ -301,31 +303,31 @@ int main(int argc, char **argv) {
           printf("Missing number of ninjas.\n");
           printArgErrorInfo();
           return -1;
-  }
+  	}
 
 	if(argc < 5) {
           printf("Missing pirate average costuming time.\n");
           printArgErrorInfo();
           return -1;
-  }
+  	}
 
 	if(argc < 6) {
           printf("Missing ninja average costuming time.\n");
           printArgErrorInfo();
           return -1;
-  }
+  	}
 
 	if(argc < 7) {
           printf("Missing pirate average arrival time.\n");
           printArgErrorInfo();
           return -1;
-  }
+  	}
 
 	if(argc < 8) {
           printf("Missing ninja average arrival time.\n");
           printArgErrorInfo();
           return -1;
-  }
+  	}
 
   // Error types
   error_type correct_n = correct_num;
@@ -392,30 +394,30 @@ int main(int argc, char **argv) {
 
   for(i = 0; i < numOfPirates; i++) {
 
-      fighter_n *pirate = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
-      if(!pirate) {
+      fighter_n *pn = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      if(!pn) {
         printf("Cannot malloc() for pirate!!!!!\n");
         return -1;
       }
 
-      pirate->id = i;
-      pirate->type = pirate;
+      (*pn).id = i;
+      (*pn).type = pirate;
 
-      pthread_create(&pirates[i], NULL, Action, (void *) pirate); // TODO: Action
+      pthread_create(&pirates[i], NULL, Action, (void *) pn); // TODO: Action
   }
 
   for(i = 0; i < numOfNinjas; i++) {
 
-      fighter_n *ninja = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
-      if(!ninja) {
+      fighter_n *nn = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      if(!nn) {
         printf("Cannot malloc() for ninja!!!!!\n");
         return -1;
       }
 
-      ninja->id = i;
-      ninja->type = ninja;
+      (*nn).id = i;
+      (*nn).type = ninja;
 
-      pthread_create(&ninjas[i], NULL, Action, (void *) ninja); // Same as above for Action
+      pthread_create(&ninjas[i], NULL, Action, (void *) nn); // Same as above for Action
   }
 
   for(i = 0; i < numOfPirates; i++) {
