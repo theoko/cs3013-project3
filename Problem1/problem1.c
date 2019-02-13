@@ -48,6 +48,10 @@ void leaveWardrobe(fighter f) {
 
 }
 
+void *Action(void *dresser) {
+
+}
+
 /* * * * * * * * * * * * * * * * * * * * * * *
 *								Helper methods
 * * * * * * * * * * * * * * * * * * * * * * * */
@@ -289,7 +293,30 @@ int main(int argc, char **argv) {
   initializeCostumeDepartment(numOfPirates, numOfNinjas, numOfTeams);
 
   for(i = 0; i < numOfPirates; i++) {
-    // pthread_create();
+
+      pirate_n *pirate = malloc(sizeof(pirate_n *)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      pirate->id = i;
+      pthread_create(&pirates[i], NULL, Action, (void *) pirate); // TODO: Action
   }
+
+  for(i = 0; i < numOfNinjas; i++) {
+
+      ninja_n *ninja = malloc(sizeof(ninja_n *)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+      ninja->id = i;
+      pthread_create(&ninjas[i], NULL, Action, (void *) ninja); // Same as above for Action
+  }
+
+  for(i = 0; i < numOfPirates; i++) {
+      pthread_join(&pirates[i], NULL);
+  }
+
+  for(i = 0; i < numOfNinjas; i++) {
+      pthread_join(&ninjas[i], NULL);
+  }
+
+  //TODO: Function that will finalize functionality of program (print some requested
+  //      stats, get time when program is about to finish etc.)
+
+  return 0;
 
 }

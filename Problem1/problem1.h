@@ -37,6 +37,7 @@ typedef enum err_t {
 //  - visit time
 //  - time waiting
 typedef struct ninja_node {
+  int id; // number to help identify corresponding thread
   int owes; // Amount of gold owed
   int numOfVisits; // Number of visits
   GList* visitTime; // List which will keep track of time spent on each visit
@@ -49,6 +50,7 @@ typedef struct ninja_node {
 //  - number of visits
 //  - time waiting
 typedef struct pirate_node {
+  int id; // number to help identify corresponding thread 
   int owes; // Amount of gold owed
   int numOfVisits;
   GList* visitTime; // List which will keep track of time spent on each visit
