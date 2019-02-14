@@ -46,16 +46,9 @@ void enterCostumeDepartment(fighter_n *dresser) {
     /* CRITICAL SECTION */
     if (costume_department.status == 0) {
         // Costume department is empty
-        double entityProb = drand48();
+        // double entityProb = drand48();
 
-        if(entityProb < .5 && !isEmpty(pirate_queue)) {
-
-            // int tmp_pirate = dequeue(pirate_queue);
-            // while (tmp_pirate != dresser->id) {
-            //     enqueue(pirate_queue, tmp_pirate);
-            //
-            //     tmp_pirate = dequeue(pirate_queue);
-            // }
+        if(dresser->type == pirate) {
 
             costume_department.status = 1;
             costume_department.count_in_department++;
@@ -66,15 +59,6 @@ void enterCostumeDepartment(fighter_n *dresser) {
             costume_department.count_in_department--;
 	    costume_department.status = 0;
         } else {
-            if(isEmpty(ninja_queue))
-                return;
-
-            // int tmp_ninja = dequeue(ninja_queue);
-            // while (tmp_ninja != dresser->id) {
-            //     enqueue(ninja_queue, tmp_ninja);
-            //
-            //     tmp_ninja = dequeue(pirate_queue);
-            // }
 
             costume_department.status = 2;
             costume_department.count_in_department++;
@@ -85,14 +69,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
             costume_department.count_in_department--;
 	    costume_department.status = 0;
         }
-    } else if (costume_department.status == 1 && !isEmpty(pirate_queue)) {
-
-        // int tmp_pirate = dequeue(pirate_queue);
-        // while (tmp_pirate != dresser->id) {
-        //     enqueue(pirate_queue, tmp_pirate);
-        //
-        //     tmp_pirate = dequeue(pirate_queue);
-        // }
+    } else if (costume_department.status == 1) {
 
         // Costume department is occupied by pirate(s)
         // Dequeue another pirate
@@ -102,16 +79,8 @@ void enterCostumeDepartment(fighter_n *dresser) {
         sleep(pirateAvgCostumingTime);
         costume_department.count_in_department--;
         costume_department.status = 0;
-    } else {
-        if(isEmpty(ninja_queue))
-            return;
 
-        // int tmp_ninja = dequeue(ninja_queue);
-        // while (tmp_ninja != dresser->id) {
-        //     enqueue(ninja_queue, tmp_ninja);
-        //
-        //     tmp_ninja = dequeue(pirate_queue);
-        // }
+    } else {
 
         // Costume department is occupied by ninja(s)
         // Dequeue another ninja
@@ -493,17 +462,24 @@ int main(int argc, char **argv) {
       pthread_create(&ninjas[i], NULL, Action, (void *) nn); // Same as above for Action
   }
 
-  printf("Calling join() for pirates.\n");
-  while(!isEmpty(pirate_queue)) {
-      pthread_join(pirates[dequeue(pirate_queue)], NULL);
+  printf("Calling join()\n");
+  while(!isEmpty(pirate_queue) || !isEmpty(ninja_queue)) {
+      
+	  double schedule_next = drand48();
+     
+    if ((schedule_next < .5) || (isEmpty(ninja_queue))) {
+    		int pirate_id = dequeue(pirate_queue);
+			if(!isEmpty(pirate_queue)) {
+				pthread_join(pirates[pirate_id], NULL);
+			}
+      } else if ((schedule_next >= .5) || (isEmpty(pirate_queue))) {
+    	  	int ninja_id = dequeue(ninja_queue);
+			if(!isEmpty(ninja_queue)) {
+				pthread_join(ninjas[ninja_id], NULL);
+			}
+      }
+	
   }
-  printf("Pirates done.\n");
-
-  printf("Calling join() for ninjas.\n");
-  while(!isEmpty(ninja_queue)) {
-      pthread_join(ninjas[dequeue(ninja_queue)], NULL);
-  }
-  printf("Ninjas done.\n");
 
   pthread_mutex_destroy(&(costume_department.costume_mutex));
   pthread_mutex_destroy(&print_mutex);
