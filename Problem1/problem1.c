@@ -2,7 +2,7 @@
 
 /* * * * * * * * * * * * * * * * * * * * * * *
 * Costume department initialization methods
-* * * * * * * * * * * * * * * * * * * * * * * */
+* * * * * * * * * * * * * * * * * * * * *  * */
 
 void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams) {
 
@@ -153,18 +153,18 @@ void *Action(void *dresser) {
         printf("Started thread(pirate) with ID: %d\n", fn->id);
 
         // Sleep for average arrival time of pirates before queueing
-        sleep(pirateAvgArrivalTime);
+        //sleep(pirateAvgArrivalTime);
 
         // Enqueue pirate
-        enqueue(pirate_queue, fn->id);
+        //enqueue(pirate_queue, fn->id);
     } else if (fn->type == ninja) {
         printf("Started thread(ninja) with ID: %d\n", fn->id);
 
         // Sleep for average arrival time of ninjas before queueing
-        sleep(ninjaAvgArrivalTime);
+        //sleep(ninjaAvgArrivalTime);
 
         // Enqueue ninja
-        enqueue(ninja_queue, fn->id);
+        //enqueue(ninja_queue, fn->id);
     }
 
 
@@ -472,6 +472,8 @@ int main(int argc, char **argv) {
       (*pn).id = i;
       (*pn).type = pirate;
 
+      enqueue(pirate_queue, i);
+
       pthread_create(&pirates[i], NULL, Action, (void *) pn); // TODO: Action
   }
 
@@ -486,17 +488,21 @@ int main(int argc, char **argv) {
       (*nn).id = i;
       (*nn).type = ninja;
 
+      enqueue(ninja_queue, i);
+
       pthread_create(&ninjas[i], NULL, Action, (void *) nn); // Same as above for Action
   }
 
   printf("Calling join() for pirates.\n");
-  while(!isEmpty(pirate_queue))
+  while(!isEmpty(pirate_queue)) {
       pthread_join(pirates[dequeue(pirate_queue)], NULL);
+  }
   printf("Pirates done.\n");
 
   printf("Calling join() for ninjas.\n");
-  while(!isEmpty(ninja_queue))
+  while(!isEmpty(ninja_queue)) {
       pthread_join(ninjas[dequeue(ninja_queue)], NULL);
+  }
   printf("Ninjas done.\n");
 
   pthread_mutex_destroy(&(costume_department.costume_mutex));
