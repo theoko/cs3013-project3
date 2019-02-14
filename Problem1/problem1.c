@@ -64,6 +64,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
             printf("Dressing pirate %d\n", dresser->id);
             sleep(pirateAvgCostumingTime);
             costume_department.count_in_department--;
+	    costume_department.status = 0;
         } else {
             if(isEmpty(ninja_queue))
                 return;
@@ -82,6 +83,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
             printf("Dressing ninja %d\n", dresser->id);
             sleep(ninjaAvgCostumingTime);
             costume_department.count_in_department--;
+	    costume_department.status = 0;
         }
     } else if (costume_department.status == 1 && !isEmpty(pirate_queue)) {
         int tmp_pirate = dequeue(pirate_queue);
@@ -98,6 +100,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
         printf("Dressing another pirate %d\n", dresser->id);
         sleep(pirateAvgCostumingTime);
         costume_department.count_in_department--;
+        costume_department.status = 0;
     } else {
         if(isEmpty(ninja_queue))
             return;
@@ -116,12 +119,11 @@ void enterCostumeDepartment(fighter_n *dresser) {
         printf("Dressing another ninja %d\n", dresser->id);
         sleep(ninjaAvgCostumingTime);
         costume_department.count_in_department--;
+        costume_department.status = 0;
     }
     /* END OF CRITICAL SECTION */
 
     condition = 0;
-
-    pthread_cond_signal(&(costume_department.costume_condition));
 }
 
 void leaveCostumeDepartment(fighter_n *dresser) {
@@ -183,26 +185,30 @@ void *Action(void *dresser) {
 
     //} else {
 
+    pthread_mutex_lock(&(costume_department.costume_mutex));        
+
     // Acquire the lock
     if (fn->type == ninja)
       printf("Ninja %d: Acquiring lock\n", fn->id);
     else
       printf("Pirate %d: Acquiring lock\n", fn->id);
 
-    pthread_mutex_lock(&(costume_department.costume_mutex));
-
-    //while(!condition)
-        //pthread_cond_wait(&(costume_department.costume_condition), &(costume_department.costume_mutex));
+    //while(!condition) {
+	//printf("Waiting...\n");
+    	//pthread_cond_wait(&(costume_department.costume_condition), &(costume_department.costume_mutex));
+    //}
 
     enterCostumeDepartment(fn); // Enter costume department
     leaveCostumeDepartment(fn); // Leave costume department
-
-    pthread_mutex_unlock(&(costume_department.costume_mutex));
 
     if (fn->type == ninja)
       printf("Ninja %d: Releasing lock\n", fn->id);
     else
       printf("Pirate %d: Releasing lock\n", fn->id);
+
+    pthread_mutex_unlock(&(costume_department.costume_mutex));
+
+    pthread_cond_signal(&(costume_department.costume_condition));
 
     //}
 
@@ -482,15 +488,20 @@ int main(int argc, char **argv) {
       pthread_create(&ninjas[i], NULL, Action, (void *) nn); // Same as above for Action
   }
 
+  printf("Calling join() for pirates.\n");
   for(i = 0; i < numOfPirates; i++) {
       pthread_join(pirates[i], NULL);
   }
   printf("Pirates done.\n");
 
+  printf("Calling join() for ninjas.\n");
   for(i = 0; i < numOfNinjas; i++) {
       pthread_join(ninjas[i], NULL);
   }
   printf("Ninjas done.\n");
+
+  pthread_mutex_destroy(&(costume_department.costume_mutex));
+  pthread_mutex_destroy(&print_mutex);
 
   //TODO: Function that will finalize functionality of program (print some requested
   //      stats, get time when program is about to finish etc.)
