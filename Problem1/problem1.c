@@ -41,7 +41,6 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
 
 void enterCostumeDepartment(fighter_n *dresser) {
 
-    /* CRITICAL SECTION */
     if (costume_department.status == 0) {
         // Costume department is empty
         // double entityProb = drand48();
@@ -51,20 +50,20 @@ void enterCostumeDepartment(fighter_n *dresser) {
             pthread_mutex_lock(&(costume_department.costume_mutex));
             costume_department.status = 1;
             costume_department.count_in_department++;
-            pthread_mutex_unlock(&(costume_department.costume_mutex));
 
             // Dress pirate
-            printf("Dressing pirate %d\n", dresser->id);
+			printf("Dressing pirate %d\n", dresser->id);
+            pthread_mutex_unlock(&(costume_department.costume_mutex));
 
             usleep(pirateAvgCostumingTime);
 
             pthread_mutex_lock(&(costume_department.costume_mutex));
             // Increment number of visits
-      			(*dresser).numOfVisits++;
+			(*dresser).numOfVisits++;
 
-      			// Push time spent
-      			float timeSpent = pirateAvgCostumingTime / 60000; // Get minutes
-      			push(&(*dresser).visitTime, &timeSpent, sizeof(float));
+			// Push time spent
+			float timeSpent = pirateAvgCostumingTime / 60000; // Get minutes
+			push(&(*dresser).visitTime, &timeSpent, sizeof(float));
 
             costume_department.count_in_department--;
             costume_department.status = 0;
@@ -75,16 +74,17 @@ void enterCostumeDepartment(fighter_n *dresser) {
             pthread_mutex_lock(&(costume_department.costume_mutex));
             costume_department.status = 2;
             costume_department.count_in_department++;
-            pthread_mutex_unlock(&(costume_department.costume_mutex));
 
             // Dress ninja
-            printf("Dressing ninja %d\n", dresser->id);
+			printf("Dressing ninja %d\n", dresser->id);
+            pthread_mutex_unlock(&(costume_department.costume_mutex));
+
             usleep(ninjaAvgCostumingTime);
 
             pthread_mutex_lock(&(costume_department.costume_mutex));
             // Push time spent
-			      float timeSpent = ninjaAvgCostumingTime / 60000; // Get minutes
-			      push(&(*dresser).visitTime, &timeSpent, sizeof(float));
+		    float timeSpent = ninjaAvgCostumingTime / 60000; // Get minutes
+		    push(&(*dresser).visitTime, &timeSpent, sizeof(float));
 
             costume_department.count_in_department--;
             costume_department.status = 0;
@@ -96,9 +96,10 @@ void enterCostumeDepartment(fighter_n *dresser) {
         // Costume department is occupied by pirate(s)
         // Dequeue another pirate
         costume_department.count_in_department++;
-        pthread_mutex_unlock(&(costume_department.costume_mutex));
 
         printf("Dressing another pirate %d\n", dresser->id);
+        pthread_mutex_unlock(&(costume_department.costume_mutex));
+
         usleep(pirateAvgCostumingTime);
 
         pthread_mutex_lock(&(costume_department.costume_mutex));
@@ -112,9 +113,10 @@ void enterCostumeDepartment(fighter_n *dresser) {
         // Costume department is occupied by ninja(s)
         // Dequeue another ninja
         costume_department.count_in_department++;
-        pthread_mutex_unlock(&(costume_department.costume_mutex));
 
         printf("Dressing another ninja %d\n", dresser->id);
+        pthread_mutex_unlock(&(costume_department.costume_mutex));
+
         usleep(ninjaAvgCostumingTime);
 
         pthread_mutex_lock(&(costume_department.costume_mutex));
@@ -124,9 +126,6 @@ void enterCostumeDepartment(fighter_n *dresser) {
 
     }
 
-    /* END OF CRITICAL SECTION */
-
-    condition = 0;
 }
 
 void leaveCostumeDepartment(fighter_n *dresser) {
@@ -146,23 +145,28 @@ void *Action(void *dresser) {
         printf("Started thread(pirate) with ID: %d\n", fn->id);
 
         // usleep for average arrival time of pirates before queueing
-        //usleep(pirateAvgArrivalTime);
+        usleep(pirateAvgArrivalTime);
 
+        pthread_mutex_lock(&(costume_department.costume_mutex));
         // Push time spent
 		float timeSpent = pirateAvgArrivalTime / 60000; // Get minutes
 		push(&(*fn).waitTime, &timeSpent, sizeof(float));
+		pthread_mutex_unlock(&(costume_department.costume_mutex));
 
         // Enqueue pirate
         //enqueue(pirate_queue, fn->id);
     } else if (fn->type == ninja) {
+
         printf("Started thread(ninja) with ID: %d\n", fn->id);
 
         // usleep for average arrival time of ninjas before queueing
-        //usleep(ninjaAvgArrivalTime);
+        usleep(ninjaAvgArrivalTime);
 
+        pthread_mutex_lock(&(costume_department.costume_mutex));
         // Push time spent
 		float timeSpent = ninjaAvgArrivalTime / 60000; // Get minutes
 		push(&(*fn).waitTime, &timeSpent, sizeof(float));
+		pthread_mutex_unlock(&(costume_department.costume_mutex));
 
         // Enqueue ninja
         //enqueue(ninja_queue, fn->id);
