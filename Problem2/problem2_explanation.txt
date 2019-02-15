@@ -1,4 +1,5 @@
-Phase 1:
+Question 1:
+This intersection is controlled by applying the First In, First Out (FIFO) algorithm (otherwise called as First Come, First Served). Even though this algorithm is simple and thus easy to implement, this method is suboptimal because each job (driver) may not be running for the same amount of time and a job that arrives first may run much longer than the ones that may follow. Conesequently, the latter jobs will take much more time to complete since they will be waiting for the former job (that runs longer) to complete first. Therefore in this case, the average turnaround time for the system will be high. This problem is generally referred to as the convoy effect (a number of relatively-short potential coansumers of a resource get queued
+behind a heavyweight resource consumer).
 
-
-Phase 2:
+Question 2:
