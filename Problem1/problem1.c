@@ -249,9 +249,9 @@ int getNormDistro(int mean) {
     if (num < 1) { //check if rand result makes sense
         num = 1;
     }
-    if (num > 1000) {
-        num = 1000;
-    }
+//    if (num > 1000) {
+//        num = 1000;
+//    }
 
     return (int) floor(num); //turn float to int and round down
 }
@@ -542,7 +542,7 @@ int main(int argc, char **argv) {
       pn[i]->type = pirate;
       pn[i]->numOfVisits = 0;
 
-      enqueue(pirate_queue, i);
+//      enqueue(pirate_queue, i);
 
       pthread_create(&pirates[i], NULL, Action, (void *) pn[i]); // TODO: Action
   }
@@ -561,7 +561,7 @@ int main(int argc, char **argv) {
       nn[i]->type = ninja;
       nn[i]->numOfVisits = 0;
 
-      enqueue(ninja_queue, i);
+//      enqueue(ninja_queue, i);
 
       pthread_create(&ninjas[i], NULL, Action, (void *) nn[i]); // Same as above for Action
   }
@@ -628,11 +628,11 @@ int main(int argc, char **argv) {
   pthread_mutex_destroy(&(costume_department.costume_mutex));
   pthread_mutex_destroy(&print_mutex);
 
-  printf("\n\nLet's test some shit");
-
-  for(int j = 0; j < 1000; j++) {
-	  printf("%d: %d\n", j, getNormDistro(j));
-  }
+//  printf("\n\nLet's test some shit");
+//
+//  for(int j = 0; j < 1000; j++) {
+//	  printf("%d: %d\n", j, getNormDistro(j));
+//  }
 
   //TODO: Function that will finalize functionality of program (print some requested
   //      stats, get time when program is about to finish etc.)
