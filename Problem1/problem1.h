@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <math.h>
 #include <limits.h>
 
 #define SEED_VAL (100)
@@ -37,8 +38,8 @@ typedef struct fighter_node {
   int id; // number to help identify corresponding thread
   int owes; // Amount of gold owed
   int numOfVisits; // Number of visits
-  GList* visitTime; // List which will keep track of time spent on each visit
-  GList* waitTime; // List which will keep track of time spent waiting
+  GList* visitTime; // List which will keep track of time spent on each visit -- minutes!!
+  GList* waitTime; // List which will keep track of time spent waiting -- minutes!!
   fighter type;
 } fighter_n;
 
@@ -120,12 +121,15 @@ void enterCostumeDepartment(fighter_n *dresser);
 void leaveCostumeDepartment(fighter_n *dresser);
 
 // Helper methods
+int getNormDistro(int mean);
 long getDiffTime(struct timeval *start, struct timeval *end);
 void printArgErrorInfo();
 void printErrorForEntity(char *entityName, error_type err);
 
 // Linked list methods
 void push(GList** head_ref, void *new_data, size_t data_size);
+void printList(GList *node, void (*fptr)(void *));
+void printInt(void *n);
 
 // Queue methods
 GQueue* createQueue(unsigned capacity);
