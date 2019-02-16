@@ -9,7 +9,7 @@
 #include <math.h>
 #include <limits.h>
 
-#define SEED_VAL (100)
+#define SEED_VAL (8769872)
 
 // General linked list
 typedef struct g_list
@@ -17,14 +17,6 @@ typedef struct g_list
     void  *data; // any data
     struct g_list *next; // pointer to next element
 } GList;
-
-// Queue
-typedef struct g_queue
-{
-    int front, rear, size;
-    unsigned capacity;
-    int* array;
-} GQueue;
 
 typedef enum fighter_type {
   ninja, pirate
@@ -42,33 +34,6 @@ typedef struct fighter_node {
   GList* waitTime; // List which will keep track of time spent waiting -- minutes!!
   fighter type;
 } fighter_n;
-
-// // Ninja:
-// //  - owes
-// //  - number of visits
-// //  - visit time
-// //  - time waiting
-// typedef struct ninja_node {
-//   int id; // number to help identify corresponding thread
-//   int owes; // Amount of gold owed
-//   int numOfVisits; // Number of visits
-//   GList* visitTime; // List which will keep track of time spent on each visit
-//   GList* waitTime; // List which will keep track of time spent waiting
-//   fighter type;
-// } ninja_n;
-//
-// // Pirate:
-// //  - owes
-// //  - number of visits
-// //  - time waiting
-// typedef struct pirate_node {
-//   int id; // number to help identify corresponding thread
-//   int owes; // Amount of gold owed
-//   int numOfVisits;
-//   GList* visitTime; // List which will keep track of time spent on each visit
-//   GList* waitTime; // List which will keep track of time spent waiting
-//   fighter type;
-// } pirate_n;
 
 // Team:
 //  - time busy
@@ -130,25 +95,14 @@ void printErrorForEntity(char *entityName, error_type err);
 void push(GList** head_ref, void *new_data, size_t data_size);
 void printList(GList *node, void (*fptr)(void *));
 void printInt(void *n);
-
-// Queue methods
-GQueue* createQueue(unsigned capacity);
-int isFull(GQueue* queue);
-int isEmpty(GQueue* queue);
-void enqueue(GQueue* queue, int item);
-int dequeue(GQueue* queue);
-int front(GQueue* queue);
-int rear(GQueue* queue);
+int sumOf(GList *node);
+int check30Mins(GList *node);
+int calculateTotalDebt(GList *node);
 
 // Global variables
 costume_dept costume_department; // Struct that holds the costume department properties
 
-GQueue* pirate_queue; // Queue to hold pirates
-GQueue* ninja_queue; // Queue to hold ninjas
-// DON'T NEED A MIXED_QUEUE
-
 pthread_mutex_t print_mutex; // Mutex for printing
-int condition;
 
 unsigned int numOfTeams;
 unsigned int numOfPirates;

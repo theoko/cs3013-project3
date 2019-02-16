@@ -1,31 +1,47 @@
-#ifndef PROBLEM1_H
-#define PROBLEM1_H
+#ifndef PROBLEM2_H
+#define PROBLEM2_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <errno.h>
 #include <pthread.h>
-#include <unistd.h>
 #include <semaphore.h>
-#include <sys/time.h>
-#include <math.h>
-#include <limits.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
 
-#define SEED_VAL (100)
+#define TRUE 1
+#define NUM_CARS 20
+#define LEFT 0
+#define STRAIGHT 1
+#define RIGHT 2
+#define NORTH 3
+#define EAST 4
+#define SOUTH 5
+#define WEST 6
 
-sem_t s[4];
+sem_t road_nw;
+sem_t road_ne;
+sem_t road_sw;
+sem_t road_se;
+sem_t car_num;
+sem_t queue_lock;
+sem_t cars_waiting;
 
-typedef struct g_list
-{
-    void  *data; // any data
-    struct g_list *next; // pointer to next element
-} GList;
+struct car_struct{
+	pthread_t thread;
+	char from;
+	char turn;
+	int num;
+	struct car_struct* next;
+};
+typedef struct car_struct car;
 
-typedef struct driver {
+void masshole(void);
+void add_car(car* head, car* add);
+car* get_car(car* head);
+void car_control(void);
 
-	//list of quadrants driver will pass through
-	GList *quadrants;
-	int dirOrigin; // 0 for North, 1 South, 2 for West, 3 for East
-	int id;
-} driver;
+// FIFO queue for all cars, regardless of direction
+car car_queue;
 
 #endif

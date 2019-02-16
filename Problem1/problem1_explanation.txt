@@ -1,0 +1,20 @@
+This program creates threads for the number of pirates and ninjas specified by the user.
+
+The program calls pthread_create() with a pointer to a function that is going to get executed
+by a thread. It also passes in the struct for each "fighter" that contains information about
+that pirate/ninja (id of pirate/ninja, amount of gold owed, number of visits, visit times, wait times)
+
+A thread waits for the average arrival time (of ninja/pirate -- determined by getNormDistro()) 
+specified by the user and then enters the costume department by calling enterCostumerDepartment() 
+where it acquires the costume department mutex in order to alter values in the costume department 
+struct. After sleeping for the average costuming time (determined by get getNormDistro()), the
+thread acquires the costume department mutex in order to update shared values (count_in_department,
+status, gross_revenue).
+Then another probability is calculated that determines whether the pirate/ninja will be returning
+(25% yes, 75% no).
+
+After that, the program calls pthread_join() on each thread in order to wait for all of them to finish.
+
+Avoiding starvation: The program prevents starvation since threads that represent pirates and 
+ninjas are randomly scheduled by the OS scheduler. Even if another pirate gets into the 
+costume department, a ninja thread can be scheduled to run next.

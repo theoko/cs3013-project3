@@ -7,7 +7,6 @@
 void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTeams) {
 
     pthread_mutex_init(&(costume_department.costume_mutex), NULL);
-    condition = 0;
 
     costume_department.status = 0;
 
@@ -24,11 +23,6 @@ void initializeCostumeDepartment(int numOfPirates, int numOfNinjas, int numOfTea
     costume_department.gross_revenue = 0;
     costume_department.gold_per_visit = 0;
     costume_department.total_profits = 0;
-
-    gettimeofday(&(costume_department.start),  NULL);
-
-    pirate_queue = createQueue(numOfPirates);
-    ninja_queue = createQueue(numOfNinjas);
 
 }
 
@@ -57,7 +51,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
 
 			int costuming_time = getNormDistro(pirateAvgCostumingTime);
 
-            usleep(costuming_time * 1000);
+            sleep(costuming_time);
 
             // Increment number of visits
 			(*dresser).numOfVisits++;
@@ -68,6 +62,8 @@ void enterCostumeDepartment(fighter_n *dresser) {
             pthread_mutex_lock(&(costume_department.costume_mutex));
             costume_department.count_in_department--;
             costume_department.status = 0;
+
+            costume_department.gross_revenue += costuming_time;
             pthread_mutex_unlock(&(costume_department.costume_mutex));
 
         } else {
@@ -85,7 +81,7 @@ void enterCostumeDepartment(fighter_n *dresser) {
 
 			int costuming_time = getNormDistro(ninjaAvgCostumingTime);
 
-            usleep(costuming_time * 1000);
+            sleep(costuming_time);
 
             // Increment number of visits
 			(*dresser).numOfVisits++;
@@ -97,13 +93,15 @@ void enterCostumeDepartment(fighter_n *dresser) {
 
             costume_department.count_in_department--;
             costume_department.status = 0;
+
+            costume_department.gross_revenue += costuming_time;
             pthread_mutex_unlock(&(costume_department.costume_mutex));
         }
     } else if (costume_department.status == 1) {
 
         pthread_mutex_lock(&(costume_department.costume_mutex));
+
         // Costume department is occupied by pirate(s)
-        // Dequeue another pirate
         costume_department.count_in_department++;
         pthread_mutex_unlock(&(costume_department.costume_mutex));
 
@@ -114,7 +112,10 @@ void enterCostumeDepartment(fighter_n *dresser) {
 
         int costuming_time = getNormDistro(pirateAvgCostumingTime);
 
-        usleep(costuming_time * 1000);
+        sleep(costuming_time);
+
+        // Increment number of visits
+		(*dresser).numOfVisits++;
 
         // Push time spent
 		push(&(*dresser).visitTime, &costuming_time, sizeof(int));
@@ -122,13 +123,15 @@ void enterCostumeDepartment(fighter_n *dresser) {
         pthread_mutex_lock(&(costume_department.costume_mutex));
         costume_department.count_in_department--;
         costume_department.status = 0;
+
+        costume_department.gross_revenue += costuming_time;
         pthread_mutex_unlock(&(costume_department.costume_mutex));
 
     } else {
 
         pthread_mutex_lock(&(costume_department.costume_mutex));
+
         // Costume department is occupied by ninja(s)
-        // Dequeue another ninja
         costume_department.count_in_department++;
 
         pthread_mutex_unlock(&(costume_department.costume_mutex));
@@ -139,7 +142,10 @@ void enterCostumeDepartment(fighter_n *dresser) {
 	    int costuming_time = getNormDistro(ninjaAvgCostumingTime);
         pthread_mutex_unlock(&print_mutex);
 
-        usleep(costuming_time);
+        sleep(costuming_time);
+
+        // Increment number of visits
+		(*dresser).numOfVisits++;
 
         // Push time spent
 		push(&(*dresser).visitTime, &costuming_time, sizeof(int));
@@ -147,6 +153,8 @@ void enterCostumeDepartment(fighter_n *dresser) {
         pthread_mutex_lock(&(costume_department.costume_mutex));
         costume_department.count_in_department--;
         costume_department.status = 0;
+
+        costume_department.gross_revenue += costuming_time;
         pthread_mutex_unlock(&(costume_department.costume_mutex));
 
     }
@@ -173,64 +181,44 @@ void *Action(void *dresser) {
 
         int arrival_time = getNormDistro(pirateAvgArrivalTime);
 
+        pthread_mutex_lock(&(costume_department.costume_mutex));
+        costume_department.count_waiting++;
+        pthread_mutex_unlock(&(costume_department.costume_mutex));
+
         // usleep for average arrival time of pirates before queueing
-		usleep(arrival_time * 1000);
+		sleep(arrival_time);
+
+		pthread_mutex_lock(&(costume_department.costume_mutex));
+		costume_department.count_waiting--;
+		pthread_mutex_unlock(&(costume_department.costume_mutex));
 
         // Push time spent
-		float timeSpent = pirateAvgArrivalTime / 60000; // Get minutes
-		push(&(*fn).waitTime, &timeSpent, sizeof(float));
+		push(&(*fn).waitTime, &arrival_time, sizeof(int));
 
-        // Enqueue pirate
-        //enqueue(pirate_queue, fn->id);
     } else if (fn->type == ninja) {
 
         printf("Started thread(ninja) with ID: %d\n", fn->id);
 
         int arrival_time = getNormDistro(ninjaAvgArrivalTime);
 
+        pthread_mutex_lock(&(costume_department.costume_mutex));
+		costume_department.count_waiting++;
+		pthread_mutex_unlock(&(costume_department.costume_mutex));
+
         // usleep for average arrival time of ninjas before queueing
-        usleep(arrival_time * 1000);
+        sleep(arrival_time);
+
+        pthread_mutex_lock(&(costume_department.costume_mutex));
+		costume_department.count_waiting--;
+		pthread_mutex_unlock(&(costume_department.costume_mutex));
 
         // Push time spent
-		float timeSpent = ninjaAvgArrivalTime / 60000; // Get minutes
-		push(&(*fn).waitTime, &timeSpent, sizeof(float));
+		push(&(*fn).waitTime, &arrival_time, sizeof(int));
 
-        // Enqueue ninja
-        //enqueue(ninja_queue, fn->id);
     }
-
-
-
-    //if((costume_department.status == 1 && fn->type == pirate) || (costume_department.status == 2 && fn->type == ninja)) {
-
-      //if (fn->type == ninja)
-      //  printf("Ninja %d: Entering costume department together with other ninja(s)\n", fn->id);
-      //else
-      //  printf("Pirate %d: Entering costume department together with other pirate(s)\n", fn->id);
-
-      //enterCostumeDepartment(fn);
-      //leaveCostumeDepartment(fn);
-
-      //if (fn->type == ninja)
-      //  printf("Ninja %d: Leaving costume department\n", fn->id);
-      //else
-      //  printf("Pirate %d: Leaving costume department\n", fn->id);
-
-    //} else {
-
-
-    //while(!condition) {
-	//printf("Waiting...\n");
-    	//pthread_cond_wait(&(costume_department.costume_condition), &(costume_department.costume_mutex));
-    //}
 
     enterCostumeDepartment(fn); // Enter costume department
     leaveCostumeDepartment(fn); // Leave costume department
-
-    //}
-
-    //pthread_cond_signal(&(costume_department.costume_condition));
-
 
     return fn;
 
@@ -244,8 +232,9 @@ void *Action(void *dresser) {
 int getNormDistro(int mean) {
     float a = drand48();
     float b = drand48();
-    float z = sqrt(-2 * log(a)) * cos(2 * M_PI * b); //box-muller equation
-    float num = ((mean / 2) * z) + mean; //random result within our mean
+    float z = sqrt(-2 * log(a)) * cos(2 * M_PI * b); // Box-muller equation
+    float num = ((mean / 2) * z) + mean;
+
     if (num < 1) { //check if rand result makes sense
         num = 1;
     }
@@ -290,7 +279,7 @@ void printErrorForEntity(char *entityName, error_type err) {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*	Linked list methods
+* Linked list methods
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 void push(GList** head_ref, void *new_data, size_t data_size)
@@ -327,79 +316,55 @@ void printInt(void *n)
    printf("%d\n", *(int *)n);
 }
 
-/* * * * * * * * * * * * * * * * * * * * * * *
-*	Queue methods
-* * * * * * * * * * * * * * * * * * * * * * * */
-
-GQueue* createQueue(unsigned capacity) {
-
-		// Allocate space for GQueue struct
-	  GQueue* queue = (GQueue*) malloc(sizeof(GQueue));
-
-		// Set max queue capacity
-	  queue->capacity = capacity;
-
-		// Set queue front
-	  queue->front = queue->size = 0;
-
-		// Set queue rear
-	  queue->rear = capacity - 1;
-
-	  queue->array = (int*) malloc(queue->capacity * sizeof(int));
-
-	  return queue;
-}
-
-int isFull(GQueue* queue) {
-
-		// Check if size has reached max queue capacity
-		return (queue->size == queue->capacity);
-
-}
-
-int isEmpty(GQueue* queue) {
-
-		// Check if queue size is 0
-		return (queue->size == 0);
-
-}
-
-void enqueue(GQueue* queue, int item)
+int sumOf(GList *node)
 {
-    if (isFull(queue))
-        return;
-    queue->rear = (queue->rear + 1)%queue->capacity;
-    queue->array[queue->rear] = item;
-    queue->size = queue->size + 1;
-    printf("%d enqueued to queue\n", item);
+	int sum = 0;
+
+	while(node != NULL)
+	{
+		sum += *(int *)	node->data;
+		node = node->next;
+	}
+
+	return sum;
 }
 
-int dequeue(GQueue* queue)
+int check30Mins(GList *node)
 {
-    if (isEmpty(queue))
-        return INT_MIN;
-    int item = queue->array[queue->front];
-    queue->front = (queue->front + 1)%queue->capacity;
-    queue->size = queue->size - 1;
-    return item;
+	int total = 0;
+
+	while(node != NULL)
+	{
+		int d = *(int *) node->data;
+
+		if(d > 30) {
+			total += d;
+		}
+
+		node = node->next;
+	}
+
+	return total;
 }
 
-int front(GQueue* queue)
+int calculateTotalDebt(GList *node)
 {
-    if (isEmpty(queue))
-        return INT_MIN;
-    return queue->array[queue->front];
-}
+	int total = 0;
 
-int rear(GQueue* queue)
-{
-    if (isEmpty(queue))
-        return INT_MIN;
-    return queue->array[queue->rear];
+	while(node != NULL)
+	{
+		int d = *(int *) node->data;
+
+		total += d;
+
+		node = node->next;
+	}
+
+	return total;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * *
-*	Main()
+* Main()
 * * * * * * * * * * * * * * * * * * * * * * * */
 
 int main(int argc, char **argv) {
@@ -503,21 +468,10 @@ int main(int argc, char **argv) {
       return -1;
   }
 
-  pirateAvgCostumingTime = (pirateAvgCostumingTime / 60);
-  pirateAvgArrivalTime = (pirateAvgArrivalTime / 60);
-
-  ninjaAvgCostumingTime = (ninjaAvgCostumingTime / 60);
-  ninjaAvgArrivalTime = (ninjaAvgArrivalTime / 60);
-
-  printf("\nIn this world, pirateAvgCostumingTime = %d\n", pirateAvgCostumingTime);
-  printf("In this world, pirateAvgArrivalTime = %d\n", pirateAvgArrivalTime);
-  printf("In this world, ninjaAvgCostumingTime = %d\n", ninjaAvgCostumingTime);
-  printf("In this world, ninjaAvgArrivalTime = %d\n\n", ninjaAvgArrivalTime);
-
-  pirateAvgCostumingTime *= 1000; // Convert microseconds to milliseconds
-  pirateAvgArrivalTime *= 1000; // Convert microseconds to milliseconds
-  ninjaAvgCostumingTime *= 1000; // Convert microseconds to milliseconds
-  ninjaAvgArrivalTime *= 1000; // Convert microseconds to milliseconds
+  printf("\n In this world, pirateAvgCostumingTime = %d minutes\n", pirateAvgCostumingTime);
+  printf(" In this world, pirateAvgArrivalTime = %d minutes\n", pirateAvgArrivalTime);
+  printf(" In this world, ninjaAvgCostumingTime = %d minutes\n", ninjaAvgCostumingTime);
+  printf(" In this world, ninjaAvgArrivalTime = %d minutes\n\n", ninjaAvgArrivalTime);
 
   pthread_mutex_init(&print_mutex, NULL);
 
@@ -527,124 +481,159 @@ int main(int argc, char **argv) {
   // Initialize costume department
   initializeCostumeDepartment(numOfPirates, numOfNinjas, numOfTeams);
 
-  // Pointer to pirate struct
-  fighter_n *pn[numOfPirates];
-  for(i = 0; i < numOfPirates; i++) {
+  // Start timer
+  gettimeofday(&(costume_department.start),  NULL);
 
-      pn[i] = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
-      if(!pn[i]) {
-        printf("Cannot malloc() for pirate!!!!!\n");
-        return -1;
-      }
+//  for(int day = 0; day < numOfTeams; day++) {
 
-      pn[i]->id = i;
-      pn[i]->owes = 0;
-      pn[i]->type = pirate;
-      pn[i]->numOfVisits = 0;
+	  	// Pointer to pirate struct
+	    fighter_n *pn[numOfPirates];
+	    for(i = 0; i < numOfPirates; i++) {
 
-//      enqueue(pirate_queue, i);
+	        pn[i] = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+	        if(!pn[i]) {
+	          printf("Cannot malloc() for pirate!!!!!\n");
+	          return -1;
+	        }
 
-      pthread_create(&pirates[i], NULL, Action, (void *) pn[i]); // TODO: Action
-  }
+	        pn[i]->id = i;
+	        pn[i]->owes = 0;
+	        pn[i]->type = pirate;
+	        pn[i]->numOfVisits = 0;
 
-  // Pointer to ninja struct
-  fighter_n *nn[numOfNinjas];
-  for(i = 0; i < numOfNinjas; i++) {
+	        pthread_create(&pirates[i], NULL, Action, (void *) pn[i]); // TODO: Action
+	    }
 
-      nn[i] = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
-      if(!nn[i]) {
-        printf("Cannot malloc() for ninja!!!!!\n");
-        return -1;
-      }
+	    // Pointer to ninja struct
+	    fighter_n *nn[numOfNinjas];
+	    for(i = 0; i < numOfNinjas; i++) {
 
-      nn[i]->id = i;
-      nn[i]->type = ninja;
-      nn[i]->numOfVisits = 0;
+	        nn[i] = (fighter_n *) malloc(sizeof(fighter_n)); // TODO: add free in the end of main to avoid potential memory leak :ppppp
+	        if(!nn[i]) {
+	          printf("Cannot malloc() for ninja!!!!!\n");
+	          return -1;
+	        }
 
-//      enqueue(ninja_queue, i);
+	        nn[i]->id = i;
+	        nn[i]->type = ninja;
+	        nn[i]->numOfVisits = 0;
 
-      pthread_create(&ninjas[i], NULL, Action, (void *) nn[i]); // Same as above for Action
-  }
+	        pthread_create(&ninjas[i], NULL, Action, (void *) nn[i]); // Same as above for Action
+	    }
 
-  printf("Calling join()\n");
-//  while(!isEmpty(pirate_queue) || !isEmpty(ninja_queue)) {
+	    printf("Calling join()\n");
 
-	// To be fair, we randomly schedule a pthread_join (avoids starvation of ninjas/pirates)
-//    if ((schedule_next < .5) || (isEmpty(ninja_queue))) {
-//    		int pirate_id = dequeue(pirate_queue);
-//  			if(!isEmpty(pirate_queue)) {
-//  				// pthread_join(pirates[pirate_id], NULL);
-//  			}
-//
-//      } else if ((schedule_next >= .5) || (isEmpty(pirate_queue))) {
-//    	  	int ninja_id = dequeue(ninja_queue);
-//    			if(!isEmpty(ninja_queue)) {
-//    				  // pthread_join(ninjas[ninja_id], NULL);
-//    			}
-//
-//      }
+	    for(i = 0; i < numOfPirates; i++) {
+	          pthread_join(pirates[i], NULL);
+	    }
 
-    // If a pirate is inside the room why not let another pirate in?
-//    if (costume_department.status == 1) {
-//    	int pirate_id = dequeue(pirate_queue);
-//		if(!isEmpty(pirate_queue)) {
-//			pthread_join(pirates[pirate_id], NULL);
-//		}
-//    }
+	    for(i = 0; i < numOfNinjas; i++) {
+	          pthread_join(ninjas[i], NULL);
+	    }
 
-    // If a ninja is inside the room why not let another ninja in?
-//    if (costume_department.status == 2) {
-//    	int ninja_id = dequeue(ninja_queue);
-//		if(!isEmpty(ninja_queue)) {
-//			pthread_join(ninjas[ninja_id], NULL);
-//		}
-//    }
+	    printf("\nVisit times for pirates:\n");
+	    for(i = 0; i < numOfPirates; i++) {
+	      pn[i]->owes =  calculateTotalDebt(pn[i]->visitTime);
+
+	  	  printf("Pirate %d: ", i);
+	  	  printList(pn[i]->visitTime, printInt);
+	    }
+
+	    printf("\nVisit times for ninjas:\n");
+	    for(i = 0; i < numOfNinjas; i++) {
+	      nn[i]->owes =  calculateTotalDebt(nn[i]->visitTime);
+
+	  	  printf("Ninja %d: ", i);
+	    	  printList(nn[i]->visitTime, printInt);
+	    }
+
+	    printf("\nWait times for pirates:\n");
+		for(i = 0; i < numOfPirates; i++) {
+
+//		  int totalWait = check30Mins(pn[i]->waitTime);
+
+//		  costume_department.gross_revenue = costume_department.gross_revenue - totalWait;
+
+		  printf("Pirate %d: ", i);
+		  printList(pn[i]->waitTime, printInt);
+		}
+
+		printf("\nWait times for ninjas:\n");
+		for(i = 0; i < numOfNinjas; i++) {
+
+//		  int totalWait = check30Mins(nn[i]->waitTime);
+
+//		  costume_department.gross_revenue = costume_department.gross_revenue - totalWait;
+
+		  printf("Ninja %d: ", i);
+			  printList(nn[i]->waitTime, printInt);
+		}
+
+		printf("\nDebt for pirates:\n");
+		for(i = 0; i < numOfPirates; i++) {
+		  printf("Pirate %d owes: %d\n", i, pn[i]->owes);
+		}
+
+		printf("\nDebt for ninjas:\n");
+		for(i = 0; i < numOfNinjas; i++) {
+		  printf("Ninja %d owes: %d\n", i, nn[i]->owes);
+		}
+
+
 
 //  }
 
-  for(i = 0; i < numOfPirates; i++) {
-        pthread_join(pirates[i], NULL);
-  }
-
-  for(i = 0; i < numOfNinjas; i++) {
-        pthread_join(ninjas[i], NULL);
-  }
+  // Pay teams
+  costume_department.expenses = 5 * numOfTeams;
+  costume_department.total_profits = costume_department.gross_revenue - costume_department.expenses;
 
   // Stop timer
   gettimeofday(&(costume_department.end),  NULL);
 
-  printf("\nVisit times for pirates:\n");
-  for(i = 0; i < numOfPirates; i++) {
-	  printf("Pirate %d: ", i);
-	  printList(pn[i]->visitTime, printInt);
-  }
+  // Print Statistics
+  // 	- Print debt of each pirate (1 gold piece for every minute inside -- free for wait time > 30 mins)!
+  //    - Print debt of each ninja !
+  //    - Print sum of debt of pirates
+  //    - Print sum of debt of ninjas
+  //    - Print visit times and wait times of pirates & ninjas
+  //    - Print costume department expenses & profits (expenses: 5 gold pieces / team, profits: revenue - expenses)
+  //    - Print gold-per-visit for pirates/ninjas
+  //    - Print amount of time that each team was busy
+  //    - Print amount of time that each team was free
+  //    - Print average queue length
 
-  printf("\nVisit times for ninjas:\n");
-  for(i = 0; i < numOfNinjas; i++) {
-	  printf("Ninja %d: ", i);
-  	  printList(nn[i]->visitTime, printInt);
-  }
+  printf("\nGold-per-visit for pirates:\n");
+	for(i = 0; i < numOfPirates; i++) {
+	  if(pn[i]->numOfVisits != 0)
+	  printf("Pirate %d gold-per-visit: %f\n", i, (float) pn[i]->owes / pn[i]->numOfVisits);
+	}
+
+	printf("\nGold-per-visit for ninjas:\n");
+	for(i = 0; i < numOfNinjas; i++) {
+	  if(nn[i]->numOfVisits != 0)
+	  printf("Ninja %d gold-per-visit: %f\n", i, (float) nn[i]->owes / nn[i]->numOfVisits);
+	}
+
+  int debtPirates = 0;
+  for(i = 0; i < numOfPirates; i++)
+	  debtPirates += pn[i]->owes;
+
+  int debtNinjas = 0;
+  for(i = 0; i < numOfPirates; i++)
+  	  debtNinjas += nn[i]->owes;
+
+  printf("\n\nSum of debt for pirates: %d", debtPirates);
+
+  printf("\nSum of debt for ninjas: %d\n", debtNinjas);
+
+  printf("\nCostume department gross revenue: %d", costume_department.gross_revenue);
+
+  printf("\nCostume department profit: %d", costume_department.total_profits);
+
+  printf("\nCostume department expenses: %d\n", costume_department.expenses);
 
   pthread_mutex_destroy(&(costume_department.costume_mutex));
   pthread_mutex_destroy(&print_mutex);
-
-//  printf("\n\nLet's test some shit");
-//
-//  for(int j = 0; j < 1000; j++) {
-//	  printf("%d: %d\n", j, getNormDistro(j));
-//  }
-
-  //TODO: Function that will finalize functionality of program (print some requested
-  //      stats, get time when program is about to finish etc.)
-
-  // 1. Convert 1 minute to 1 hour -- ex. avgArrivalTime 60 sec -> 1 sec
-  //    (avgArrivalTime / 60) * 1000
-
-  // 2. Call pthread_join for same type after checking costume_department.status
-
-  // 3. Populate linked lists of fighter_n
-
-  // 4. Calculate statistics
 
   return 0;
 
