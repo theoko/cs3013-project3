@@ -103,19 +103,6 @@ void addDriver(driver* head, driver* add) {
 	sem_post(&queue_lock);
 }
 
-driver* get_driver(driver* head) {
-	if (head->next == NULL) {
-		printf("No more drivers! Start again.\n");
-		return NULL;
-	}
-	sem_wait(&drivers_waiting);
-	sem_wait(&queue_lock);
-	driver* next_driver = head->next;
-	head->next = next_driver->next;
-	sem_post(&queue_lock);
-	return next_driver;
-}
-
 void controlDriver(void) {
 	while (1) {
 		driver* next_driver = getDriver(&driverList);

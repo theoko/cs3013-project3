@@ -1,0 +1,162 @@
+./pn 2 10 10 50 60 40 70
+
+ In this world, pirateAvgCostumingTime = 50 minutes
+ In this world, pirateAvgArrivalTime = 40 minutes
+ In this world, ninjaAvgCostumingTime = 60 minutes
+ In this world, ninjaAvgArrivalTime = 70 minutes
+
+Calling join()
+Started thread(pirate) with ID: 6
+Started thread(pirate) with ID: 7
+Started thread(pirate) with ID: 8
+Started thread(pirate) with ID: 5
+Started thread(pirate) with ID: 9
+Started thread(ninja) with ID: 0
+Started thread(ninja) with ID: 1
+Started thread(ninja) with ID: 2
+Started thread(ninja) with ID: 3
+Started thread(pirate) with ID: 4
+Started thread(ninja) with ID: 4
+Started thread(ninja) with ID: 5
+Started thread(ninja) with ID: 6
+Started thread(ninja) with ID: 7
+Started thread(ninja) with ID: 8
+Started thread(ninja) with ID: 9
+Started thread(pirate) with ID: 3
+Started thread(pirate) with ID: 2
+Started thread(pirate) with ID: 1
+Started thread(pirate) with ID: 0
+Dressing pirate 3
+Dressing another pirate 8
+Dressing pirate 5
+Dressing another pirate 4
+Dressing another pirate 7
+Dressing another pirate 0
+Dressing another pirate 0
+Dressing another pirate 6
+Dressing another pirate 5
+Dressing another pirate 7
+Dressing another pirate 9
+Dressing another pirate 4
+Dressing another pirate 2
+Dressing another pirate 1
+Dressing another pirate 1
+Dressing another pirate 8
+Dressing pirate 5
+Dressing pirate 6
+Dressing another pirate 2
+Dressing another pirate 3
+Dressing ninja 6
+Dressing ninja 4
+Dressing pirate 7
+Dressing pirate 0
+Dressing ninja 9
+
+Visit times for pirates:
+Pirate 0: 71
+89
+Pirate 1: 48
+Pirate 2: 47
+Pirate 3: 3
+Pirate 4: 62
+Pirate 5: 88
+48
+Pirate 6: 21
+24
+Pirate 7: 24
+77
+Pirate 8: 62
+Pirate 9: 39
+
+Visit times for ninjas:
+Ninja 0: 63
+Ninja 1: 92
+Ninja 2: 84
+Ninja 3: 33
+Ninja 4: 84
+50
+Ninja 5: 46
+Ninja 6: 31
+Ninja 7: 71
+Ninja 8: 57
+Ninja 9: 71
+
+Wait times for pirates:
+Pirate 0: 36
+Pirate 1: 64
+Pirate 2: 58
+Pirate 3: 10
+Pirate 4: 21
+Pirate 5: 20
+Pirate 6: 45
+Pirate 7: 34
+Pirate 8: 13
+Pirate 9: 54
+
+Wait times for ninjas:
+Ninja 0: 43
+Ninja 1: 61
+Ninja 2: 71
+Ninja 3: 75
+Ninja 4: 54
+Ninja 5: 45
+Ninja 6: 86
+Ninja 7: 53
+Ninja 8: 67
+Ninja 9: 147
+
+Debt for pirates:
+Pirate 0 owes: 160
+Pirate 1 owes: 48
+Pirate 2 owes: 47
+Pirate 3 owes: 3
+Pirate 4 owes: 62
+Pirate 5 owes: 136
+Pirate 6 owes: 45
+Pirate 7 owes: 101
+Pirate 8 owes: 62
+Pirate 9 owes: 39
+
+Debt for ninjas:
+Ninja 0 owes: 63
+Ninja 1 owes: 92
+Ninja 2 owes: 84
+Ninja 3 owes: 33
+Ninja 4 owes: 134
+Ninja 5 owes: 46
+Ninja 6 owes: 31
+Ninja 7 owes: 71
+Ninja 8 owes: 57
+Ninja 9 owes: 71
+
+Gold-per-visit for pirates:
+Pirate 0 gold-per-visit: 80.000000
+Pirate 1 gold-per-visit: 48.000000
+Pirate 2 gold-per-visit: 47.000000
+Pirate 3 gold-per-visit: 3.000000
+Pirate 4 gold-per-visit: 62.000000
+Pirate 5 gold-per-visit: 68.000000
+Pirate 6 gold-per-visit: 22.500000
+Pirate 7 gold-per-visit: 50.500000
+Pirate 8 gold-per-visit: 62.000000
+Pirate 9 gold-per-visit: 39.000000
+
+Gold-per-visit for ninjas:
+Ninja 0 gold-per-visit: 63.000000
+Ninja 1 gold-per-visit: 92.000000
+Ninja 2 gold-per-visit: 84.000000
+Ninja 3 gold-per-visit: 33.000000
+Ninja 4 gold-per-visit: 67.000000
+Ninja 5 gold-per-visit: 46.000000
+Ninja 6 gold-per-visit: 31.000000
+Ninja 7 gold-per-visit: 71.000000
+Ninja 8 gold-per-visit: 57.000000
+Ninja 9 gold-per-visit: 71.000000
+
+
+Sum of debt for pirates: 703
+Sum of debt for ninjas: 682
+
+Costume department gross revenue: 1385
+Costume department profit: 1375
+Costume department expenses: 10

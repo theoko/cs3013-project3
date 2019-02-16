@@ -16,5 +16,5 @@ Then another probability is calculated that determines whether the pirate/ninja 
 After that, the program calls pthread_join() on each thread in order to wait for all of them to finish.
 
 Avoiding starvation: The program prevents starvation since threads that represent pirates and 
-ninjas are randomly scheduled by the OS scheduler. Even if another pirate gets into the 
+ninjas are randomly scheduled (fairness) by the OS scheduler. Even if another pirate gets into the 
 costume department, a ninja thread can be scheduled to run next.
