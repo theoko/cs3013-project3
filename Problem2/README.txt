@@ -1,0 +1,4 @@
+To run:
+
+	 make 
+	 ./driver
