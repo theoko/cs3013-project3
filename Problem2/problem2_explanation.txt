@@ -1,8 +1,10 @@
 Problem 2: Taming Massachusetts Drivers
 
 Phase 1:
-	The Minnesota drivers put a lock on the entire intersection for the duration of their turn. This is not optimal 
-	because only one driver is able to go at a time, even if there is the possibility for two or more to proceed.
+	If the Minnesotan drivers follow the convention that whoever arrives at the intersection first proceeds first, 
+	it means that they are inserting a lock in the whole intersection when it is their turn. 
+	This implementation is suboptimal, since only one driver is able to get in the intersection 
+	at a time and thereby disabling the opportunity of concurrency/parallelism.
 	
 Phase 2:
 	Massachusetts drivers do not follow the convention described above, meaning they are happy to
