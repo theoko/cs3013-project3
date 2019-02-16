@@ -1,19 +1,10 @@
-Question 1:
+Problem 2: Taming Massachusetts Drivers
 
-This intersection is controlled by applying the First In, First Out (FIFO) 
-algorithm (otherwise called as First Come, First Served). 
-
-Even though this algorithm is simple and thus easy to implement, 
-this method is suboptimal because each job (driver) may not be running 
-for the same amount of time and a job that arrives first may run much longer than
-the ones that may follow. 
-
-Consequently, the latter jobs will take much more time to complete 
-since they will be waiting for the former job (that runs longer) to complete first. 
-
-Therefore in this case, the average turnaround time for the system will be high. 
-This problem is generally referred to as the convoy effect 
-(a number of relatively-short potential consumers of a resource get queued 
-behind a heavyweight resource consumer).
-
-Question 2:
+Phase 1:
+	The Minnesota drivers put a lock on the entire intersection for the duration of their turn. This is not optimal because only one driver is able to go at a time, even if there is the possibility for two or more to proceed.
+	
+Phase 2:
+	This mindset can produce a deadlock if all 4 drivers want to go in a direction that is not a right turn. They will each move into the quadrant closest to them and nobody else will be able to go. Such a deadlock can be prevented in several ways. First, by only allowing 3 drivers to go at a time.
+	
+Implementation:
+	Our program creates twenty (20) driver threads which randomly select where they are coming from (i.e. N, E, S or W) and the path the will follow throughout the intersection. Furthermore, they are inserted into a linked list. Moreover, three (3) control threads are created to handle/manage the twenty (20) threads. The control threads are running concurrently by applying a "hand-to-hand" method. More precisely, they acquire the corresponding semaphore of the required quadrant, then acquire the next, release the previous one etc. Each thread selects a driver from the list and helps him/her to safely pass through the intersection. In main, we join each control thread and once all three (3) have exited, it loops and again generates car threads and new control threads.
