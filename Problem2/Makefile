@@ -3,10 +3,10 @@ CFLAGS = -pthread -Wall -g
 all: pn
 
 pn: pn.o
-	gcc $(CFLAGS) problem1.o -lm -o pn
+	gcc $(CFLAGS) problem2.o -lm -o drive
 
 pn.o:
-	gcc $(CFLAGS) -c problem1.c
+	gcc $(CFLAGS) -c problem2.c
 
 clean:
 	rm -rf *.o pn
