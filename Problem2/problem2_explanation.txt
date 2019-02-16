@@ -1,10 +1,28 @@
 Problem 2: Taming Massachusetts Drivers
 
 Phase 1:
-	The Minnesota drivers put a lock on the entire intersection for the duration of their turn. This is not optimal because only one driver is able to go at a time, even if there is the possibility for two or more to proceed.
+	The Minnesota drivers put a lock on the entire intersection for the duration of their turn. This is not optimal 
+	because only one driver is able to go at a time, even if there is the possibility for two or more to proceed.
 	
 Phase 2:
-	This mindset can produce a deadlock if all 4 drivers want to go in a direction that is not a right turn. They will each move into the quadrant closest to them and nobody else will be able to go. Such a deadlock can be prevented in several ways. First, by only allowing 3 drivers to go at a time.
+	Massachusetts drivers do not follow the convention described above, meaning they are happy to
+	enter an intersection even if only the front bumper of their car will fit. 
+	This mindset may lead to a deadlock when all four (4) drivers, all coming from different directions, 
+	follow any path that is not turning right. If this is the case (no driver is turning right), 
+	every driver will occupy the quadrant nearest to them and thereby, the drivers will not be able 
+	to move to another quadrant since the drivers are blocking each other. 
+	A solution that could be provided would be to let only three (3) drivers go in the intersection at a time.
 	
 Implementation:
-	Our program creates twenty (20) driver threads which randomly select where they are coming from (i.e. N, E, S or W) and the path the will follow throughout the intersection. Furthermore, they are inserted into a linked list. Moreover, three (3) control threads are created to handle/manage the twenty (20) threads. The control threads are running concurrently by applying a "hand-to-hand" method. More precisely, they acquire the corresponding semaphore of the required quadrant, then acquire the next, release the previous one etc. Each thread selects a driver from the list and helps him/her to safely pass through the intersection. In main, we join each control thread and once all three (3) have exited, it loops and again generates car threads and new control threads.
+	Our program creates twenty (20) driver threads which randomly select where 
+	they are coming from (i.e. N, E, S or W) and the path the will follow throughout the intersection. 
+	Furthermore, they are inserted into a linked list. 
+	
+	Moreover, three (3) control threads are created to handle/manage the twenty (20) threads. 
+	The control threads are running concurrently by applying a "hand-to-hand" method. 
+	
+	More precisely, they acquire the corresponding semaphore of the required quadrant, 
+	then acquire the next, release the previous one etc. 
+	Each thread selects a driver from the list and helps him/her to safely pass through the intersection. 
+	In main, we join each control thread and once all three (3) have exited, it loops and again generates car threads and
+	new control threads.
