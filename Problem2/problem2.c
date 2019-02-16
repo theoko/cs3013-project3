@@ -282,7 +282,7 @@ int main(int argc, char** argv) {
 	while(1) {
 		for(i = 0; i < 20; i++)
 			pthread_create(&driver_threads[i], &attr, (void*)&massDriver, NULL);
-		// start the control threads
+
 		pthread_create(&control_threads[0], &attr, (void*)&controlDriver, NULL);
 		pthread_create(&control_threads[1], &attr, (void*)&controlDriver, NULL);
 		pthread_create(&control_threads[2], &attr, (void*)&controlDriver, NULL);
