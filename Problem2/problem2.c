@@ -113,26 +113,26 @@ void controlDriver(void) {
 						case LEFT:
 							sem_wait(&NW);
 							printf("driver %d entered NW\n", next_driver->num);
-							sleep(rand()%3);
+							sleep(3);
 							sem_wait(&SW);
 							printf("driver %d entered SW\n", next_driver->num);
 							sem_post(&NW);
 							sem_wait(&SE);
 							printf("driver %d entered SE\n", next_driver->num);
 							sem_post(&SW);
-							sleep(rand()%4);
+							sleep(3);
 							printf("driver %d exited!\n", next_driver->num);
 							sem_post(&SE);
 						break;
 						case STRAIGHT:
 							sem_wait(&NW);
 							printf("driver %d entered NW\n", next_driver->num);
-							sleep(rand()%4);
+							sleep(3);
 							sem_wait(&SW);
 							printf("driver %d entered SW\n", next_driver->num);
 							sem_post(&NW);
 							printf("driver %d exited!\n", next_driver->num);
-							sleep(rand()%1);
+							sleep(3);
 							sem_post(&SW);
 						break;
 						case RIGHT:
@@ -149,11 +149,11 @@ void controlDriver(void) {
 							sem_wait(&NE);
 							printf("driver %d entered NE\n", next_driver->num);
 							sem_wait(&NW);
-							sleep(rand()%3);
+							sleep(3);
 							printf("driver %d entered NW\n", next_driver->num);
 							sem_post(&NE);
 							sem_wait(&SW);
-							sleep(rand()%4);
+							sleep(3);
 							printf("driver %d entered SW\n", next_driver->num);
 							sem_post(&NW);
 							printf("driver %d exited!\n", next_driver->num);
@@ -161,18 +161,18 @@ void controlDriver(void) {
 						break;
 						case STRAIGHT:
 							sem_wait(&NE);
-							sleep(rand()%1);
+							sleep(3);
 							printf("driver %d entered NE\n", next_driver->num);
 							sem_wait(&NW);
 							printf("driver %d entered NW\n", next_driver->num);
 							sem_post(&NE);
-							sleep(rand()%4);
+							sleep(3);
 							printf("driver %d exited!\n", next_driver->num);
 							sem_post(&NW);
 						break;
 						case RIGHT:
 							sem_wait(&NE);
-							sleep(rand()%1);
+							sleep(3);
 							printf("driver %d entered NE\n", next_driver->num);
 							printf("driver %d exited!\n", next_driver->num);
 							sem_post(&NE);
@@ -184,12 +184,12 @@ void controlDriver(void) {
 						case LEFT:
 							sem_wait(&SE);
 							printf("driver %d entered SE\n", next_driver->num);
-							sleep(rand()%1);
+							sleep(3);
 							sem_wait(&NE);
 							printf("driver %d entered NE\n", next_driver->num);
 							sem_post(&SE);
 							sem_wait(&NW);
-							sleep(rand()%4);
+							sleep(3);
 							printf("driver %d entered NW\n", next_driver->num);
 							sem_post(&NE);
 							printf("driver %d exited!\n", next_driver->num);
@@ -199,16 +199,16 @@ void controlDriver(void) {
 							sem_wait(&SE);
 							printf("driver %d entered SE\n", next_driver->num);
 							sem_wait(&NE);
-							sleep(rand()%1);
+							sleep(3);
 							printf("driver %d entered NE\n", next_driver->num);
 							sem_post(&SE);
-							sleep(rand()%3);
+							sleep(3);
 							printf("driver %d exited!\n", next_driver->num);
 							sem_post(&NE);
 						break;
 						case RIGHT:
 							sem_wait(&SE);
-							sleep(rand()%3);
+							sleep(3);
 							printf("driver %d entered SE\n", next_driver->num);
 							printf("driver %d exited!\n", next_driver->num);
 							sem_post(&SE);
@@ -222,12 +222,12 @@ void controlDriver(void) {
 							printf("driver %d entered SW\n", next_driver->num);
 							sem_wait(&SE);
 							printf("driver %d entered SE\n", next_driver->num);
-							sleep(rand()%3);
+							sleep(3);
 							sem_post(&SW);
 							sem_wait(&NE);
 							printf("driver %d entered NE\n", next_driver->num);
 							sem_post(&SE);
-							sleep(rand()%3);
+							sleep(3);
 							printf("driver %d exited!\n", next_driver->num);
 							sem_post(&NE);
 						break;
@@ -235,7 +235,7 @@ void controlDriver(void) {
 							sem_wait(&SW);
 							printf("driver %d entered SW\n", next_driver->num);
 							sem_wait(&SE);
-							sleep(rand()%3);
+							sleep(3);
 							printf("driver %d entered SE\n", next_driver->num);
 							sem_post(&SW);
 							printf("driver %d exited!\n", next_driver->num);
@@ -243,7 +243,7 @@ void controlDriver(void) {
 						break;
 						case RIGHT:
 							sem_wait(&SW);
-							sleep(rand()%3);
+							sleep(3);
 							printf("driver %d entered SW\n", next_driver->num);
 							printf("driver %d exited!\n", next_driver->num);
 							sem_post(&SW);
