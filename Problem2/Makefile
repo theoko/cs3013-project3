@@ -9,4 +9,4 @@ pn.o:
 	gcc $(CFLAGS) -c problem2.c
 
 clean:
-	rm -rf *.o pn
+	rm -rf *.o drive

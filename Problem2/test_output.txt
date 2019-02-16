@@ -1,0 +1,82 @@
+./drive 
+driver 1 coming from west and going straight
+driver 12 coming from south and going left
+driver 3 coming from north and going left
+driver 4 coming from east and going right
+driver 5 coming from west and going right
+driver 6 coming from north and going left
+driver 7 coming from west and going right
+driver 8 coming from east and going left
+driver 9 coming from south and going straight
+driver 10 coming from west and going right
+driver 11 coming from east and going right
+driver 13 coming from east and going left
+driver 15 coming from west and going left
+driver 14 coming from east and going straight
+driver 1 entered SW
+driver 17 coming from north and going right
+driver 3 entered NW
+driver 18 coming from west and going right
+driver 18 coming from south and going straight
+driver 2 entered SE
+driver 2 coming from south and going left
+driver 19 coming from north and going right
+driver 20 coming from south and going right
+driver 2 entered NE
+driver 1 entered SE
+driver 1 exited!
+driver 3 entered SW
+driver 3 entered SE
+driver 2 entered NW
+driver 2 exited!
+driver 4 entered NE
+driver 4 exited!
+driver 6 entered NW
+driver 3 exited!
+driver 5 entered SW
+driver 5 exited!
+driver 8 entered NE
+driver 6 entered SW
+driver 6 entered SE
+driver 8 entered NW
+driver 7 entered SW
+driver 7 exited!
+driver 6 exited!
+driver 9 entered SE
+driver 9 entered NE
+driver 8 entered SW
+driver 8 exited!
+driver 9 exited!
+driver 12 entered SE
+driver 11 entered NE
+driver 11 exited!
+driver 13 entered NE
+driver 13 entered NW
+driver 12 entered NE
+driver 10 entered SW
+driver 10 exited!
+driver 13 entered SW
+driver 13 exited!
+driver 15 entered SW
+driver 15 entered SE
+driver 12 entered NW
+driver 12 exited!
+driver 17 entered NW
+driver 17 exited!
+driver 14 entered NE
+driver 14 entered NW
+driver 15 entered NE
+driver 18 entered SW
+driver 18 exited!
+driver 18 entered SE
+driver 15 exited!
+driver 18 entered NE
+driver 14 exited!
+driver 19 entered NW
+driver 19 exited!
+No more drivers.
+driver 18 exited!
+No more drivers.
+driver 20 entered SE
+driver 20 exited!
+No more drivers.
